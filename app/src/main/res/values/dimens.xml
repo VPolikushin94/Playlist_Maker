@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="text_size_22">22sp</dimen>
+    <dimen name="margin_buttons_16">16dp</dimen>
+    <dimen name="margin_top_header_14">14dp</dimen>
+    <dimen name="text_size_16">16sp</dimen>
+</resources>

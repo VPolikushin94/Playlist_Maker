@@ -13,11 +13,11 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_top_header_14"
+        android:fontFamily="sans-serif-medium"
         android:text="@string/playlist_maker"
         android:textColor="@color/white"
-        android:textSize="@dimen/text_size_22"
-        android:layout_marginTop="@dimen/margin_top_header_14"
-        />
+        android:textSize="@dimen/text_size_22" />
 
     <Button
         android:layout_width="match_parent"

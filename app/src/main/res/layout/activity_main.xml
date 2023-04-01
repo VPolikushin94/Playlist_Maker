@@ -20,6 +20,7 @@
         android:textSize="@dimen/text_size_22" />
 
     <Button
+        android:id="@+id/button_search"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="40dp"
@@ -40,6 +41,7 @@
         android:layout_gravity="center"
         />
     <Button
+        android:id="@+id/button_library"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -60,6 +62,7 @@
         android:layout_gravity="center"
         />
     <Button
+        android:id="@+id/button_settings"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"

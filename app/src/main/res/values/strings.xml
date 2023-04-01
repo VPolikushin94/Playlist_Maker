@@ -8,4 +8,6 @@
     <string name="share">Поделиться приложением</string>
     <string name="support">Написать в поддержку</string>
     <string name="license">Пользовательское соглашение</string>
+    <string name="library_screen">This is library screen</string>
+    <string name="search_screen">This is search screen</string>
 </resources>

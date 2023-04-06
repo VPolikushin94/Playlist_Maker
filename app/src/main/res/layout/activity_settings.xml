@@ -19,7 +19,7 @@
         android:insetBottom="0dp"
         android:text="@string/settings"
         android:textColor="@color/black"
-        android:textSize="@dimen/text_size_22"
+        android:textSize="@dimen/settings_header_text_size"
         app:icon="@drawable/ic_back_arrow"
         app:iconGravity="textStart"
         app:iconPadding="24dp"
@@ -38,7 +38,7 @@
             android:layout_gravity="center_vertical"
             android:text="@string/dark_theme"
             android:textColor="@color/black"
-            android:textSize="@dimen/text_size_16"
+            android:textSize="@dimen/settings_buttons_text_size"
             />
         <androidx.appcompat.widget.SwitchCompat
             android:layout_width="wrap_content"
@@ -65,7 +65,7 @@
         android:text="@string/share"
         android:textAllCaps="false"
         android:textColor="@color/black"
-        android:textSize="@dimen/text_size_16"
+        android:textSize="@dimen/settings_buttons_text_size"
         app:icon="@drawable/ic_share"
         app:iconGravity="end"
         app:iconTint="@color/grey_darker" />
@@ -84,7 +84,7 @@
         android:text="@string/support"
         android:textAllCaps="false"
         android:textColor="@color/black"
-        android:textSize="@dimen/text_size_16"
+        android:textSize="@dimen/settings_buttons_text_size"
         app:icon="@drawable/ic_support"
         app:iconGravity="end"
         app:iconTint="@color/grey_darker" />
@@ -103,7 +103,7 @@
         android:text="@string/license"
         android:textAllCaps="false"
         android:textColor="@color/black"
-        android:textSize="@dimen/text_size_16"
+        android:textSize="@dimen/settings_buttons_text_size"
         app:icon="@drawable/ic_arrow_forward"
         app:iconGravity="end"
         app:iconTint="@color/grey_darker" />

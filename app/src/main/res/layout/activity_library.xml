@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
-        android:textSize="@dimen/text_size_22"
+        android:textSize="@dimen/library_screen_text_size"
         android:textColor="@color/black"
         android:text="@string/library_screen"
         />

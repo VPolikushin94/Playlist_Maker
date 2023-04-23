@@ -12,7 +12,7 @@
         android:layout_gravity="center"
         android:gravity="center"
         android:textSize="@dimen/search_screen_text_size"
-        android:textColor="@color/black"
+        android:textColor="?attr/colorOnSecondary"
         android:text="@string/search_screen"
         />
 

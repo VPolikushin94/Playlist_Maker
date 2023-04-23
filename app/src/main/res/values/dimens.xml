@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="margin_main_buttons_top">16dp</dimen>
+    <dimen name="margin_main_top_header">14dp</dimen>
+    <dimen name="main_header_text_size">22sp</dimen>
+    <dimen name="main_buttons_text_size">22sp</dimen>
+    <dimen name="search_screen_text_size">22sp</dimen>
+    <dimen name="settings_header_text_size">22sp</dimen>
+    <dimen name="settings_buttons_text_size">16sp</dimen>
+    <dimen name="library_screen_text_size">22sp</dimen>
+</resources>

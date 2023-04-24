@@ -53,14 +53,17 @@
     </FrameLayout>
 
     <Button style="@style/SettingsButtonsStyle"
+        android:id="@+id/button_share"
         android:text="@string/share"
         app:icon="@drawable/ic_share"/>
 
     <Button style="@style/SettingsButtonsStyle"
+        android:id="@+id/button_support"
         android:text="@string/support"
         app:icon="@drawable/ic_support"/>
 
     <Button style="@style/SettingsButtonsStyle"
+        android:id="@+id/button_licence"
         android:text="@string/license"
         app:icon="@drawable/ic_arrow_forward"/>
 

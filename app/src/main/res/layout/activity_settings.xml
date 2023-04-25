@@ -7,27 +7,10 @@
     android:paddingStart="16dp"
     android:paddingEnd="12dp">
 
-    <Button
+    <Button style="@style/BackButtonStyle"
         android:id="@+id/button_settings_back"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="40dp"
-        android:paddingHorizontal="0dp"
-        android:background="?android:attr/selectableItemBackground"
-        android:insetTop="0dp"
-        android:insetBottom="0dp"
         android:text="@string/settings"
-        android:textColor="?attr/colorOnSecondary"
-        android:textSize="@dimen/settings_header_text_size"
-        app:icon="@drawable/ic_back_arrow"
-        app:iconGravity="textStart"
-        app:iconPadding="24dp"
-        app:iconTint="?attr/colorOnSecondary"
-        android:textAllCaps="false"
-        android:gravity="center_vertical"
-        android:fontFamily="@font/ys_display_medium"
-        />
+        android:layout_marginBottom="40dp"/>
 
     <FrameLayout
         android:layout_width="match_parent"

@@ -36,21 +36,19 @@ class SettingsActivity : AppCompatActivity() {
         buttonShare.setOnClickListener {
             val sendIntent: Intent = Intent().apply {
                 action = Intent.ACTION_SEND
-                putExtra(Intent.EXTRA_TEXT, "https://practicum.yandex.ru/android-developer/")
+                putExtra(Intent.EXTRA_TEXT, getString(R.string.share_url))
                 type = "text/plain"
             }
             startActivity(sendIntent)
         }
 
         buttonSupport.setOnClickListener {
-            val subject = "Сообщение разработчикам и разработчицам приложения Playlist Maker"
-            val message = "Спасибо разработчикам и разработчицам за крутое приложение!"
             val shareIntent = Intent().apply {
                 action = Intent.ACTION_SENDTO
                 data = Uri.parse("mailto:")
-                putExtra(Intent.EXTRA_EMAIL, arrayOf("dj0j@yandex.ru"))
-                putExtra(Intent.EXTRA_SUBJECT, subject)
-                putExtra(Intent.EXTRA_TEXT, message)
+                putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.email_rec)))
+                putExtra(Intent.EXTRA_SUBJECT, getString(R.string.email_subject))
+                putExtra(Intent.EXTRA_TEXT, getString(R.string.email_message))
             }
             startActivity(shareIntent)
         }
@@ -58,7 +56,7 @@ class SettingsActivity : AppCompatActivity() {
         buttonLicence.setOnClickListener {
             val licenceIntent = Intent().apply {
                 action = Intent.ACTION_VIEW
-                data = Uri.parse("https://yandex.ru/legal/practicum_offer/")
+                data = Uri.parse(getString(R.string.licence_url))
             }
             startActivity(licenceIntent)
         }

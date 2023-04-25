@@ -10,7 +10,8 @@
     android:orientation="vertical"
     tools:context=".SearchActivity">
 
-    <TextView style="@style/TVHeaderStyle"
+    <Button style="@style/BackButtonStyle"
+        android:id="@+id/button_search_back"
         android:text="@string/search"
         android:layout_marginBottom="24dp"/>
 

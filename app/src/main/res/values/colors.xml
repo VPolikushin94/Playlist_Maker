@@ -13,4 +13,6 @@
     <color name="main_buttons_icon">#1A1B22</color>
     <color name="setting_buttons_icon">#AEAFB4</color>
     <color name="settings_back_arrow">#1A1B22</color>
+    <color name="search_hint">#AEAFB4</color>
+    <color name="search_background">#E6E8EB</color>
 </resources>

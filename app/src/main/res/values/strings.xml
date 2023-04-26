@@ -15,4 +15,5 @@
     <string name="email_message">Спасибо разработчикам и разработчицам за крутое приложение!</string>
     <string name="email_rec">dj0j@yandex.ru</string>
     <string name="licence_url">https://yandex.ru/legal/practicum_offer/</string>
+    <string name="back_button">back button</string>
 </resources>

@@ -3,12 +3,10 @@ package com.example.playlistmaker
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 
@@ -16,7 +14,8 @@ class SearchActivity : AppCompatActivity() {
 
     private lateinit var etSearch: EditText
     private lateinit var buttonClear: ImageButton
-    private lateinit var buttonSearchBack: Button
+    private lateinit var buttonSearchBack: ImageButton
+    private lateinit var searchText: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,6 +49,7 @@ class SearchActivity : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 buttonClear.visibility = clearButtonVisibility(s)
+                searchText = s.toString()
             }
 
             override fun afterTextChanged(p0: Editable?) {
@@ -75,12 +75,13 @@ class SearchActivity : AppCompatActivity() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString(SEARCH_TEXT, etSearch.text.toString())
+        outState.putString(SEARCH_TEXT, searchText)
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        etSearch.setText(savedInstanceState.getString(SEARCH_TEXT))
+        searchText = savedInstanceState.getString(SEARCH_TEXT)!!
+        etSearch.setText(searchText)
     }
 
     companion object {

@@ -8,6 +8,9 @@
     <dimen name="settings_header_text_size">22sp</dimen>
     <dimen name="settings_buttons_text_size">16sp</dimen>
     <dimen name="library_screen_text_size">22sp</dimen>
-    <dimen name="search_screen_hint_text_size">22sp</dimen>
+    <dimen name="search_screen_hint_text_size">16sp</dimen>
     <dimen name="search_screen_edittext_radius">8dp</dimen>
+    <dimen name="settings_buttons_horizontal_padding">21dp</dimen>
+    <dimen name="setting_screen_padding_start">16dp</dimen>
+    <dimen name="setting_screen_padding_end">12dp</dimen>
 </resources>

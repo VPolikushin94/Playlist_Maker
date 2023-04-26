@@ -12,7 +12,8 @@
 
     <TextView style="@style/TVHeaderStyle"
         android:text="@string/playlist_maker"
-        android:textColor="@color/white"/>
+        android:textColor="@color/white"
+        android:layout_marginBottom="40dp"/>
 
     <Button style="@style/MainButtonsStyle"
         android:id="@+id/button_search"

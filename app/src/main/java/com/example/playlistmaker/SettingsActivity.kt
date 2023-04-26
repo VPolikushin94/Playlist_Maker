@@ -5,10 +5,11 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
+import android.widget.ImageButton
 
 class SettingsActivity : AppCompatActivity() {
 
-    private lateinit var buttonSettingsBack: Button
+    private lateinit var buttonSettingsBack: ImageButton
     private lateinit var buttonShare: Button
     private lateinit var buttonSupport: Button
     private lateinit var buttonLicence: Button

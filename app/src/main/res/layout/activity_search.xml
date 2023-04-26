@@ -5,20 +5,25 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingStart="16dp"
-    android:paddingEnd="16dp"
     android:orientation="vertical"
     tools:context=".SearchActivity">
 
-    <Button style="@style/BackButtonStyle"
-        android:id="@+id/button_search_back"
-        android:text="@string/search"
-        android:layout_marginBottom="24dp"/>
-
+    <LinearLayout
+        style="@style/LinearLayoutBackButtonStyle"
+        android:layout_marginBottom="12dp">
+        <ImageButton
+            style="@style/ImageBackButtonStyle"
+            android:id="@+id/button_search_back"/>
+        <TextView
+            style="@style/TextBackButtonStyle"
+            android:text="@string/search"/>
+    </LinearLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp">
 
         <EditText
             android:id="@+id/et_search"

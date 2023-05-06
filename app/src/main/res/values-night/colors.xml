@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="main_background">#1A1B22</color>
-    <color name="setting_buttons_icon">#FFFFFFFF</color>
+    <color name="setting_buttons_icon">#FFFFFF</color>
     <color name="switch_track_tint">#9AB7EF</color>
     <color name="switch_thumb_tint">#3772E7</color>
     <color name="search_hint">#1A1B22</color>
     <color name="search_background">#FFFFFF</color>
+    <color name="search_under_track_name_text">#FFFFFF</color>
 </resources>

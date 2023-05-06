@@ -16,4 +16,9 @@
     <string name="email_rec">dj0j@yandex.ru</string>
     <string name="licence_url">https://yandex.ru/legal/practicum_offer/</string>
     <string name="back_button">back button</string>
+    <string name="test_band_name">Test band name</string>
+    <string name="test_track_time">2:55</string>
+    <string name="test_song_name">Test song name</string>
+    <string name="track_image_description">track image</string>
+    <string name="info_arrow_description">info arrow</string>
 </resources>

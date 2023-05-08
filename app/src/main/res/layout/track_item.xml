@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingStart="13dp"
@@ -20,21 +21,20 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginHorizontal="8dp"
         android:layout_weight="1">
         <TextView
             android:id="@+id/tv_track_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/test_song_name"
             android:textColor="?attr/colorOnSecondary"
             android:textSize="16sp"
             android:fontFamily="@font/ys_display_regular"
             android:layout_marginTop="6dp"
             android:layout_marginBottom="1dp"
             android:maxLines="1"
-            android:ellipsize="end"/>
+            android:ellipsize="end"
+            tools:text="Test song name"/>
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -45,8 +45,8 @@
                 android:id="@+id/tv_artist_name"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/test_band_name"
-                android:layout_weight="1"/>
+                android:layout_weight="1"
+                tools:text="Test band name"/>
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -59,7 +59,7 @@
                 android:id="@+id/tv_track_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/test_track_time"/>
+                tools:text="2:55"/>
         </LinearLayout>
     </LinearLayout>
     <ImageView

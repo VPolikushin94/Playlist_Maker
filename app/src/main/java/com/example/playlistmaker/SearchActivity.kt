@@ -9,21 +9,30 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageButton
+import androidx.recyclerview.widget.RecyclerView
 
 class SearchActivity : AppCompatActivity() {
 
     private lateinit var etSearch: EditText
     private lateinit var buttonClear: ImageButton
     private lateinit var buttonSearchBack: ImageButton
-    private lateinit var searchText: String
+    private var searchText: String = ""
+    private lateinit var rvTrackList: RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
+        setRecyclerView()
         setButtons()
         addTextWatcher()
         setButtonListeners()
+    }
+
+    private fun setRecyclerView() {
+        rvTrackList = findViewById(R.id.rv_track_list)
+        val trackListAdapter = TrackListAdapter(mockTrackList)
+        rvTrackList.adapter = trackListAdapter
     }
 
     private fun setButtonListeners() {

@@ -15,4 +15,5 @@
     <color name="settings_back_arrow">#1A1B22</color>
     <color name="search_hint">#AEAFB4</color>
     <color name="search_background">#E6E8EB</color>
+    <color name="search_under_track_name_text">#AEAFB4</color>
 </resources>

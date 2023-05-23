@@ -13,16 +13,17 @@
 
     <ImageView
         android:id="@+id/iv_track_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_placeholder"
+        android:layout_width="@dimen/track_image_size"
+        android:layout_height="@dimen/track_image_size"
+        android:src="@drawable/ic_song_placeholder"
         android:contentDescription="@string/track_image_description" />
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_marginHorizontal="8dp"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        >
         <TextView
             android:id="@+id/tv_track_name"
             android:layout_width="wrap_content"
@@ -43,7 +44,7 @@
             <TextView
                 style="@style/UnderTrackNameTextStyle"
                 android:id="@+id/tv_artist_name"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 tools:text="Test band name"/>

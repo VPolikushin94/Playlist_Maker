@@ -18,4 +18,7 @@
     <string name="back_button">back button</string>
     <string name="track_image_description">track image</string>
     <string name="info_arrow_description">info arrow</string>
+    <string name="nothing_found">Ничего не нашлось</string>
+    <string name="bad_connection">Проблемы со связью\n\nЗагрузка не удалась. Проверьте подключение к интернету</string>
+    <string name="reload">Обновить</string>
 </resources>

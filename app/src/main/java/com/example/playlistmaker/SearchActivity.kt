@@ -11,6 +11,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import retrofit2.Call
 import retrofit2.Callback
@@ -34,27 +35,29 @@ class SearchActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
-        setRecyclerView()
-        setButtons()
-        setPlaceholderViews()
+        setViews()
+        setRecyclerViewAdapter()
         addTextWatcher()
         setButtonListeners()
 
         setEditorActionListener()
     }
 
-    private fun setPlaceholderViews() {
+    private fun setViews() {
+        etSearch = findViewById(R.id.et_search)
+        buttonClear = findViewById(R.id.button_clear)
+        buttonSearchBack = findViewById(R.id.button_search_back)
         llPlaceholder = findViewById(R.id.ll_placeholder)
         ivPlaceholder = findViewById(R.id.iv_placeholder)
         tvPlaceholder = findViewById(R.id.tv_placeholder)
         buttonPlaceholder = findViewById(R.id.button_placeholder)
+        rvTrackList = findViewById(R.id.rv_track_list)
     }
 
     private fun setEditorActionListener() {
         etSearch.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 search()
-                true
             }
             false
         }
@@ -73,33 +76,33 @@ class SearchActivity : AppCompatActivity() {
                         trackListAdapter.notifyDataSetChanged()
                     }
                     if (trackList.isEmpty()) {
-                        showPlaceholder(PLACEHOLDER_NOTHING_FOUND)
+                        showPlaceholder(SearchPlaceholder.PLACEHOLDER_NOTHING_FOUND)
                     } else {
-                        showPlaceholder(PLACEHOLDER_HIDDEN)
+                        showPlaceholder(SearchPlaceholder.PLACEHOLDER_HIDDEN)
                     }
                 } else {
-                    showPlaceholder(PLACEHOLDER_BAD_CONNECTION)
+                    showPlaceholder(SearchPlaceholder.PLACEHOLDER_BAD_CONNECTION)
                 }
             }
 
             override fun onFailure(call: Call<TracksResponse>, t: Throwable) {
-                showPlaceholder(PLACEHOLDER_BAD_CONNECTION)
+                showPlaceholder(SearchPlaceholder.PLACEHOLDER_BAD_CONNECTION)
             }
 
         })
     }
 
-    private fun showPlaceholder(placeholderType: Int) {
+    private fun showPlaceholder(placeholderType: SearchPlaceholder) {
         when (placeholderType) {
-            PLACEHOLDER_HIDDEN -> llPlaceholder.visibility = View.GONE
-            PLACEHOLDER_NOTHING_FOUND -> {
+            SearchPlaceholder.PLACEHOLDER_HIDDEN -> llPlaceholder.visibility = View.GONE
+            SearchPlaceholder.PLACEHOLDER_NOTHING_FOUND -> {
                 changePlaceholder(
                     true,
                     R.drawable.ic_nothing_found_placeholder,
                     R.string.nothing_found
                 )
             }
-            PLACEHOLDER_BAD_CONNECTION -> {
+            SearchPlaceholder.PLACEHOLDER_BAD_CONNECTION -> {
                 changePlaceholder(
                     false,
                     R.drawable.ic_bad_connection_placeholder,
@@ -119,16 +122,12 @@ class SearchActivity : AppCompatActivity() {
 
         ivPlaceholder.setImageResource(image)
         tvPlaceholder.text = getString(text)
-        if (isPlaceholderNothingFound) {
-            buttonPlaceholder.visibility = View.GONE
-        } else {
-            buttonPlaceholder.visibility = View.VISIBLE
-        }
+
+        buttonPlaceholder.isVisible = !isPlaceholderNothingFound
         llPlaceholder.visibility = View.VISIBLE
     }
 
-    private fun setRecyclerView() {
-        rvTrackList = findViewById(R.id.rv_track_list)
+    private fun setRecyclerViewAdapter() {
         trackListAdapter = TrackListAdapter()
         trackListAdapter.trackList = trackList
         rvTrackList.adapter = trackListAdapter
@@ -148,12 +147,6 @@ class SearchActivity : AppCompatActivity() {
         buttonPlaceholder.setOnClickListener {
             search()
         }
-    }
-
-    private fun setButtons() {
-        etSearch = findViewById(R.id.et_search)
-        buttonClear = findViewById(R.id.button_clear)
-        buttonSearchBack = findViewById(R.id.button_search_back)
     }
 
     private fun addTextWatcher() {
@@ -202,11 +195,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     companion object {
-        const val SEARCH_TEXT = "SEARCH_TEXT"
-        const val TRACK_LIST = "TRACK_LIST"
-
-        const val PLACEHOLDER_HIDDEN = 0
-        const val PLACEHOLDER_NOTHING_FOUND = 1
-        const val PLACEHOLDER_BAD_CONNECTION = 2
+        private const val SEARCH_TEXT = "SEARCH_TEXT"
+        private const val TRACK_LIST = "TRACK_LIST"
     }
 }

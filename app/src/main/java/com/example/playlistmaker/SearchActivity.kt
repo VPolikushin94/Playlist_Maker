@@ -1,7 +1,8 @@
 package com.example.playlistmaker
 
+import android.annotation.SuppressLint
 import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -11,11 +12,13 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+
 
 class SearchActivity : AppCompatActivity() {
 
@@ -24,23 +27,73 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var buttonSearchBack: ImageButton
     private var searchText: String = ""
     private lateinit var rvTrackList: RecyclerView
+    private lateinit var rvSearchHistory: RecyclerView
     private var trackList = ArrayList<Track>()
     private lateinit var trackListAdapter: TrackListAdapter
+    private lateinit var historyTrackListAdapter: HistoryTrackListAdapter
     private lateinit var llPlaceholder: LinearLayout
     private lateinit var buttonPlaceholder: Button
     private lateinit var ivPlaceholder: ImageView
     private lateinit var tvPlaceholder: TextView
+    private lateinit var searchHistory: SearchHistory
+    private lateinit var sharedPrefs: SharedPreferences
+    private lateinit var llSearchHistory: LinearLayout
+    private lateinit var buttonClearHistory: Button
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
+        setSharedPrefs()
+        searchHistory = SearchHistory(sharedPrefs)
+
         setViews()
-        setRecyclerViewAdapter()
+        setRecyclerViewAdapters()
         addTextWatcher()
         setButtonListeners()
 
         setEditorActionListener()
+
+        setTrackClickListener()
+
+        setEditTextFocusChangeListener()
+        etSearch.requestFocus()
+
+
+
+        rvSearchHistory.setOnTouchListener { _, _ ->
+            hideKeyboard()
+            false
+        }
+    }
+
+    private fun setTrackClickListener() {
+        trackListAdapter.onTrackClickListener = {
+            searchHistory.addTrackToHistory(it)
+        }
+    }
+
+    private fun setEditTextFocusChangeListener() {
+        etSearch.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus && searchText.isEmpty()) {
+                showPlaceholder(SearchPlaceholder.PLACEHOLDER_SEARCH_HISTORY)
+            } else {
+                showPlaceholder(SearchPlaceholder.PLACEHOLDER_HIDDEN)
+            }
+        }
+    }
+
+    private fun setSharedPrefs() {
+        sharedPrefs = getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE)
+        val listener =
+            SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+                if (key == SearchHistory.SEARCH_HISTORY_KEY) {
+                    trackListAdapter.trackList = searchHistory.getHistoryTrackList()
+                    historyTrackListAdapter.notifyDataSetChanged()
+                }
+            }
+        sharedPrefs.registerOnSharedPreferenceChangeListener(listener)
     }
 
     private fun setViews() {
@@ -52,12 +105,16 @@ class SearchActivity : AppCompatActivity() {
         tvPlaceholder = findViewById(R.id.tv_placeholder)
         buttonPlaceholder = findViewById(R.id.button_placeholder)
         rvTrackList = findViewById(R.id.rv_track_list)
+        rvSearchHistory = findViewById(R.id.rv_search_history)
+        llSearchHistory = findViewById(R.id.ll_search_history)
+        buttonClearHistory = findViewById(R.id.button_clear_history)
     }
 
     private fun setEditorActionListener() {
         etSearch.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 search()
+                etSearch.clearFocus()
             }
             false
         }
@@ -88,13 +145,15 @@ class SearchActivity : AppCompatActivity() {
             override fun onFailure(call: Call<TracksResponse>, t: Throwable) {
                 showPlaceholder(SearchPlaceholder.PLACEHOLDER_BAD_CONNECTION)
             }
-
         })
     }
 
     private fun showPlaceholder(placeholderType: SearchPlaceholder) {
         when (placeholderType) {
-            SearchPlaceholder.PLACEHOLDER_HIDDEN -> llPlaceholder.visibility = View.GONE
+            SearchPlaceholder.PLACEHOLDER_HIDDEN -> {
+                llPlaceholder.visibility = View.GONE
+                llSearchHistory.visibility = View.GONE
+            }
             SearchPlaceholder.PLACEHOLDER_NOTHING_FOUND -> {
                 changePlaceholder(
                     true,
@@ -109,6 +168,11 @@ class SearchActivity : AppCompatActivity() {
                     R.string.bad_connection
                 )
             }
+            SearchPlaceholder.PLACEHOLDER_SEARCH_HISTORY -> {
+                clearTrackList()
+                llPlaceholder.visibility = View.GONE
+                llSearchHistory.visibility = View.VISIBLE
+            }
         }
     }
 
@@ -117,8 +181,8 @@ class SearchActivity : AppCompatActivity() {
         @DrawableRes image: Int,
         @StringRes text: Int
     ) {
-        trackList.clear()
-        trackListAdapter.notifyDataSetChanged()
+        llSearchHistory.visibility = View.GONE
+        clearTrackList()
 
         ivPlaceholder.setImageResource(image)
         tvPlaceholder.text = getString(text)
@@ -127,10 +191,15 @@ class SearchActivity : AppCompatActivity() {
         llPlaceholder.visibility = View.VISIBLE
     }
 
-    private fun setRecyclerViewAdapter() {
+    private fun setRecyclerViewAdapters() {
         trackListAdapter = TrackListAdapter()
         trackListAdapter.trackList = trackList
         rvTrackList.adapter = trackListAdapter
+
+        historyTrackListAdapter = HistoryTrackListAdapter()
+        val historyTrackList = searchHistory.getHistoryTrackList()
+        historyTrackListAdapter.historyTrackList = historyTrackList
+        rvSearchHistory.adapter = historyTrackListAdapter
     }
 
     private fun setButtonListeners() {
@@ -138,8 +207,7 @@ class SearchActivity : AppCompatActivity() {
             hideKeyboard()
             etSearch.setText("")
 
-            trackList.clear()
-            trackListAdapter.notifyDataSetChanged()
+            clearTrackList()
         }
         buttonSearchBack.setOnClickListener {
             finish()
@@ -147,6 +215,14 @@ class SearchActivity : AppCompatActivity() {
         buttonPlaceholder.setOnClickListener {
             search()
         }
+        buttonClearHistory.setOnClickListener{
+            searchHistory.clearHistoryTrackList()
+        }
+    }
+
+    private fun clearTrackList() {
+        trackList.clear()
+        trackListAdapter.notifyDataSetChanged()
     }
 
     private fun addTextWatcher() {
@@ -157,6 +233,12 @@ class SearchActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 buttonClear.visibility = clearButtonVisibility(s)
                 searchText = s.toString()
+
+                if(etSearch.hasFocus() && searchText.isEmpty()) {
+                    showPlaceholder(SearchPlaceholder.PLACEHOLDER_SEARCH_HISTORY)
+                } else {
+                    showPlaceholder(SearchPlaceholder.PLACEHOLDER_HIDDEN)
+                }
             }
 
             override fun afterTextChanged(p0: Editable?) {
@@ -177,7 +259,6 @@ class SearchActivity : AppCompatActivity() {
     private fun hideKeyboard() {
         val keyboard = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         keyboard.hideSoftInputFromWindow(etSearch.windowToken, 0)
-        etSearch.clearFocus()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -197,5 +278,7 @@ class SearchActivity : AppCompatActivity() {
     companion object {
         private const val SEARCH_TEXT = "SEARCH_TEXT"
         private const val TRACK_LIST = "TRACK_LIST"
+
+        const val SHARED_PREFERENCES = "SHARED_PREFERENCES"
     }
 }

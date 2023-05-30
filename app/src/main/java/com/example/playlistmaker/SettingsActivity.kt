@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageButton
+import com.google.android.material.switchmaterial.SwitchMaterial
 
 class SettingsActivity : AppCompatActivity() {
 
@@ -13,20 +14,28 @@ class SettingsActivity : AppCompatActivity() {
     private lateinit var buttonShare: Button
     private lateinit var buttonSupport: Button
     private lateinit var buttonLicence: Button
+    private lateinit var switcherDarkTheme: SwitchMaterial
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
-        setButtons()
+        setViews()
         setButtonListeners()
+
+        switcherDarkTheme.isChecked = (applicationContext as App).isDarkTheme
+
+        switcherDarkTheme.setOnCheckedChangeListener { switcher, isChecked ->
+            (applicationContext as App).switchTheme(isChecked)
+        }
     }
 
-    private fun setButtons() {
+    private fun setViews() {
         buttonSettingsBack = findViewById(R.id.button_settings_back)
         buttonShare = findViewById(R.id.button_share)
         buttonSupport = findViewById(R.id.button_support)
         buttonLicence = findViewById(R.id.button_licence)
+        switcherDarkTheme = findViewById(R.id.switcher_theme)
     }
 
     private fun setButtonListeners() {

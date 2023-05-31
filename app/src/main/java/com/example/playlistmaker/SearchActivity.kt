@@ -62,11 +62,11 @@ class SearchActivity : AppCompatActivity() {
         setEditTextFocusChangeListener()
         etSearch.requestFocus()
 
-        setTrackListsListeners()
+        setListTouchListeners()
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private fun setTrackListsListeners() {
+    private fun setListTouchListeners() {
         nsvSearchHistory.setOnTouchListener { _, _ ->
             hideKeyboard()
             false

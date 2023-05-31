@@ -3,23 +3,15 @@ package com.example.playlistmaker
 import android.content.SharedPreferences
 import android.util.Log
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 
-class SearchHistory(private val sharedPrefs: SharedPreferences) {
-
-    private val historyTrackList: ArrayList<Track>
+class SearchHistory(
+    private val sharedPrefs: SharedPreferences,
+    private var historyTrackList: ArrayList<Track>
+) {
 
     init {
-        val historyTrackArray = createTrackListFromJson(
-            sharedPrefs.getString(
-                SEARCH_HISTORY_KEY,
-                ""
-            ) ?: ""
-        )
-        historyTrackList = if (historyTrackArray.isNotEmpty()) {
-            historyTrackArray.toList() as ArrayList<Track>
-        } else {
-            arrayListOf()
-        }
+        historyTrackList = createTrackListFromJson(sharedPrefs.getString(SEARCH_HISTORY_KEY,"") ?: "")
     }
 
     fun getHistoryTrackList(): ArrayList<Track> {
@@ -27,16 +19,16 @@ class SearchHistory(private val sharedPrefs: SharedPreferences) {
     }
 
     fun addTrackToHistory(track: Track) {
-        if (historyTrackList.size <= LIST_MAX_SIZE) {
-            if (checkTrackAvailability(track.trackId)) {
-                historyTrackList.remove(track)
-            }
-            Log.d("TRACK", track.toString())
-            historyTrackList.add(track)
-            sharedPrefs.edit()
-                .putString(SEARCH_HISTORY_KEY, createJsonFromTrackList(historyTrackList))
-                .apply()
+        if (checkTrackAvailability(track.trackId)) {
+            historyTrackList.remove(track)
         }
+        if (historyTrackList.size == LIST_MAX_SIZE) {
+            historyTrackList.removeAt(LIST_MAX_SIZE - 1)
+        }
+        historyTrackList.add(0, track)
+        sharedPrefs.edit()
+            .putString(SEARCH_HISTORY_KEY, createJsonFromTrackList(historyTrackList))
+            .apply()
     }
 
     fun clearHistoryTrackList() {
@@ -56,8 +48,9 @@ class SearchHistory(private val sharedPrefs: SharedPreferences) {
         return Gson().toJson(trackList)
     }
 
-    private fun createTrackListFromJson(json: String): Array<Track> {
-        return Gson().fromJson(json, Array<Track>::class.java) ?: arrayOf()
+    private fun createTrackListFromJson(json: String): ArrayList<Track> {
+        val type = object : TypeToken<ArrayList<Track>>(){}.type
+        return Gson().fromJson(json, type) ?: arrayListOf()
     }
 
     companion object {

@@ -95,16 +95,18 @@
                 android:id="@+id/rv_search_history"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:listitem="@layout/track_item" />
 
             <com.google.android.material.button.MaterialButton
-                style="@style/SearchButtonStyle"
                 android:id="@+id/button_clear_history"
+                style="@style/SearchButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="24dp"
+                android:layout_marginBottom="24dp"
                 android:text="@string/clear_history" />
 
         </LinearLayout>
@@ -143,5 +145,7 @@
         </LinearLayout>
 
     </FrameLayout>
+
+
 
 </LinearLayout>

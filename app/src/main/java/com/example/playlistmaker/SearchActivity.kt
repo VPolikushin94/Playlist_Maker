@@ -29,6 +29,7 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var rvTrackList: RecyclerView
     private lateinit var rvSearchHistory: RecyclerView
     private var trackList = ArrayList<Track>()
+    private var historyTrackList = ArrayList<Track>()
     private lateinit var trackListAdapter: TrackListAdapter
     private lateinit var historyTrackListAdapter: HistoryTrackListAdapter
     private lateinit var llPlaceholder: LinearLayout
@@ -39,6 +40,7 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var sharedPrefs: SharedPreferences
     private lateinit var llSearchHistory: LinearLayout
     private lateinit var buttonClearHistory: Button
+    private lateinit var sharedPrefsListener: SharedPreferences.OnSharedPreferenceChangeListener
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,7 +48,7 @@ class SearchActivity : AppCompatActivity() {
         setContentView(R.layout.activity_search)
 
         setSharedPrefs()
-        searchHistory = SearchHistory(sharedPrefs)
+        searchHistory = SearchHistory(sharedPrefs, historyTrackList)
 
         setViews()
         setRecyclerViewAdapters()
@@ -60,8 +62,6 @@ class SearchActivity : AppCompatActivity() {
         setEditTextFocusChangeListener()
         etSearch.requestFocus()
 
-
-
         rvSearchHistory.setOnTouchListener { _, _ ->
             hideKeyboard()
             false
@@ -70,6 +70,9 @@ class SearchActivity : AppCompatActivity() {
 
     private fun setTrackClickListener() {
         trackListAdapter.onTrackClickListener = {
+            searchHistory.addTrackToHistory(it)
+        }
+        historyTrackListAdapter.onTrackClickListener = {
             searchHistory.addTrackToHistory(it)
         }
     }
@@ -86,14 +89,13 @@ class SearchActivity : AppCompatActivity() {
 
     private fun setSharedPrefs() {
         sharedPrefs = getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE)
-        val listener =
+        sharedPrefsListener =
             SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
                 if (key == SearchHistory.SEARCH_HISTORY_KEY) {
-                    trackListAdapter.trackList = searchHistory.getHistoryTrackList()
                     historyTrackListAdapter.notifyDataSetChanged()
                 }
             }
-        sharedPrefs.registerOnSharedPreferenceChangeListener(listener)
+        sharedPrefs.registerOnSharedPreferenceChangeListener(sharedPrefsListener)
     }
 
     private fun setViews() {
@@ -197,8 +199,7 @@ class SearchActivity : AppCompatActivity() {
         rvTrackList.adapter = trackListAdapter
 
         historyTrackListAdapter = HistoryTrackListAdapter()
-        val historyTrackList = searchHistory.getHistoryTrackList()
-        historyTrackListAdapter.historyTrackList = historyTrackList
+        historyTrackListAdapter.historyTrackList = searchHistory.getHistoryTrackList()
         rvSearchHistory.adapter = historyTrackListAdapter
     }
 

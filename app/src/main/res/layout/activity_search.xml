@@ -75,41 +75,45 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/track_item" />
 
-        <LinearLayout
-            android:id="@+id/ll_search_history"
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/nsv_search_history"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:layout_marginTop="26dp"
+            android:layout_height="wrap_content"
             android:visibility="gone">
-
-            <TextView
-                style="@style/SearchTVStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="20dp"
-                android:text="@string/you_searched"/>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_search_history"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/track_item" />
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_marginTop="26dp">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/button_clear_history"
-                style="@style/SearchButtonStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="24dp"
-                android:text="@string/clear_history" />
+                <TextView
+                    style="@style/SearchTVStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="20dp"
+                    android:text="@string/you_searched"/>
 
-        </LinearLayout>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_search_history"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/track_item" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button_clear_history"
+                    style="@style/SearchButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="24dp"
+                    android:text="@string/clear_history" />
+            </LinearLayout>
+
+        </androidx.core.widget.NestedScrollView>
 
         <LinearLayout
             android:id="@+id/ll_placeholder"

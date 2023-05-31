@@ -14,6 +14,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.RecyclerView
 import retrofit2.Call
 import retrofit2.Callback
@@ -29,7 +30,6 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var rvTrackList: RecyclerView
     private lateinit var rvSearchHistory: RecyclerView
     private var trackList = ArrayList<Track>()
-    private var historyTrackList = ArrayList<Track>()
     private lateinit var trackListAdapter: TrackListAdapter
     private lateinit var historyTrackListAdapter: HistoryTrackListAdapter
     private lateinit var llPlaceholder: LinearLayout
@@ -38,7 +38,7 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var tvPlaceholder: TextView
     private lateinit var searchHistory: SearchHistory
     private lateinit var sharedPrefs: SharedPreferences
-    private lateinit var llSearchHistory: LinearLayout
+    private lateinit var nsvSearchHistory: NestedScrollView
     private lateinit var buttonClearHistory: Button
     private lateinit var sharedPrefsListener: SharedPreferences.OnSharedPreferenceChangeListener
 
@@ -48,7 +48,7 @@ class SearchActivity : AppCompatActivity() {
         setContentView(R.layout.activity_search)
 
         setSharedPrefs()
-        searchHistory = SearchHistory(sharedPrefs, historyTrackList)
+        searchHistory = SearchHistory(sharedPrefs)
 
         setViews()
         setRecyclerViewAdapters()
@@ -62,8 +62,18 @@ class SearchActivity : AppCompatActivity() {
         setEditTextFocusChangeListener()
         etSearch.requestFocus()
 
-        rvSearchHistory.setOnTouchListener { _, _ ->
+        setTrackListsListeners()
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun setTrackListsListeners() {
+        nsvSearchHistory.setOnTouchListener { _, _ ->
             hideKeyboard()
+            false
+        }
+        rvTrackList.setOnTouchListener { _, _ ->
+            hideKeyboard()
+            etSearch.clearFocus()
             false
         }
     }
@@ -80,7 +90,11 @@ class SearchActivity : AppCompatActivity() {
     private fun setEditTextFocusChangeListener() {
         etSearch.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus && searchText.isEmpty()) {
-                showPlaceholder(SearchPlaceholder.PLACEHOLDER_SEARCH_HISTORY)
+                if(historyTrackListAdapter.historyTrackList.isNotEmpty()) {
+                    showPlaceholder(SearchPlaceholder.PLACEHOLDER_SEARCH_HISTORY)
+                } else {
+                    showPlaceholder(SearchPlaceholder.PLACEHOLDER_HIDDEN)
+                }
             } else {
                 showPlaceholder(SearchPlaceholder.PLACEHOLDER_HIDDEN)
             }
@@ -108,7 +122,7 @@ class SearchActivity : AppCompatActivity() {
         buttonPlaceholder = findViewById(R.id.button_placeholder)
         rvTrackList = findViewById(R.id.rv_track_list)
         rvSearchHistory = findViewById(R.id.rv_search_history)
-        llSearchHistory = findViewById(R.id.ll_search_history)
+        nsvSearchHistory = findViewById(R.id.nsv_search_history)
         buttonClearHistory = findViewById(R.id.button_clear_history)
     }
 
@@ -154,7 +168,7 @@ class SearchActivity : AppCompatActivity() {
         when (placeholderType) {
             SearchPlaceholder.PLACEHOLDER_HIDDEN -> {
                 llPlaceholder.visibility = View.GONE
-                llSearchHistory.visibility = View.GONE
+                nsvSearchHistory.visibility = View.GONE
             }
             SearchPlaceholder.PLACEHOLDER_NOTHING_FOUND -> {
                 changePlaceholder(
@@ -173,7 +187,7 @@ class SearchActivity : AppCompatActivity() {
             SearchPlaceholder.PLACEHOLDER_SEARCH_HISTORY -> {
                 clearTrackList()
                 llPlaceholder.visibility = View.GONE
-                llSearchHistory.visibility = View.VISIBLE
+                nsvSearchHistory.visibility = View.VISIBLE
             }
         }
     }
@@ -183,7 +197,7 @@ class SearchActivity : AppCompatActivity() {
         @DrawableRes image: Int,
         @StringRes text: Int
     ) {
-        llSearchHistory.visibility = View.GONE
+        nsvSearchHistory.visibility = View.GONE
         clearTrackList()
 
         ivPlaceholder.setImageResource(image)
@@ -207,8 +221,8 @@ class SearchActivity : AppCompatActivity() {
         buttonClear.setOnClickListener {
             hideKeyboard()
             etSearch.setText("")
-
             clearTrackList()
+            etSearch.requestFocus()
         }
         buttonSearchBack.setOnClickListener {
             finish()
@@ -217,6 +231,7 @@ class SearchActivity : AppCompatActivity() {
             search()
         }
         buttonClearHistory.setOnClickListener{
+            showPlaceholder(SearchPlaceholder.PLACEHOLDER_HIDDEN)
             searchHistory.clearHistoryTrackList()
         }
     }
@@ -236,7 +251,11 @@ class SearchActivity : AppCompatActivity() {
                 searchText = s.toString()
 
                 if(etSearch.hasFocus() && searchText.isEmpty()) {
-                    showPlaceholder(SearchPlaceholder.PLACEHOLDER_SEARCH_HISTORY)
+                    if(historyTrackListAdapter.historyTrackList.isNotEmpty()) {
+                        showPlaceholder(SearchPlaceholder.PLACEHOLDER_SEARCH_HISTORY)
+                    } else {
+                        showPlaceholder(SearchPlaceholder.PLACEHOLDER_HIDDEN)
+                    }
                 } else {
                     showPlaceholder(SearchPlaceholder.PLACEHOLDER_HIDDEN)
                 }

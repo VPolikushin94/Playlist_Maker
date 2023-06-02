@@ -17,8 +17,8 @@ class SearchHistory(private val sharedPrefs: SharedPreferences) {
     }
 
     fun addTrackToHistory(track: Track) {
-        if (checkTrackAvailability(track.trackId)) {
-            historyTrackList.remove(track)
+        historyTrackList.removeIf {
+            it.trackId == track.trackId
         }
         if (historyTrackList.size == LIST_MAX_SIZE) {
             historyTrackList.removeAt(LIST_MAX_SIZE - 1)
@@ -34,12 +34,6 @@ class SearchHistory(private val sharedPrefs: SharedPreferences) {
         sharedPrefs.edit()
             .remove(SEARCH_HISTORY_KEY)
             .apply()
-    }
-
-    private fun checkTrackAvailability(trackId: Int): Boolean {
-        return historyTrackList.find {
-            it.trackId == trackId
-        } != null
     }
 
     private fun createJsonFromTrackList(trackList: ArrayList<Track>): String {

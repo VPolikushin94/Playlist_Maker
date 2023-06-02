@@ -16,7 +16,8 @@
             android:text="@string/settings"/>
     </LinearLayout>
 
-    <androidx.appcompat.widget.SwitchCompat
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/switcher_theme"
         android:text="@string/dark_theme"
         android:paddingStart="@dimen/setting_screen_padding_start"
         android:paddingEnd="@dimen/setting_screen_padding_end"

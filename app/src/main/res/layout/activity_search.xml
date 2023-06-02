@@ -49,7 +49,7 @@
             android:textSize="@dimen/search_screen_hint_text_size"
             android:textCursorDrawable="@drawable/edittext_cursor"
             android:imeOptions="actionDone"
-            android:singleLine="true" />
+            android:singleLine="true"/>
 
         <ImageButton
             android:id="@+id/button_clear"
@@ -75,6 +75,46 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/track_item" />
 
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/nsv_search_history"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_marginTop="26dp">
+
+                <TextView
+                    style="@style/SearchTVStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="20dp"
+                    android:text="@string/you_searched"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_search_history"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/track_item" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button_clear_history"
+                    style="@style/SearchButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="24dp"
+                    android:text="@string/clear_history" />
+            </LinearLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
         <LinearLayout
             android:id="@+id/ll_placeholder"
             android:layout_width="match_parent"
@@ -92,36 +132,24 @@
                 android:src="@drawable/ic_bad_connection_placeholder" />
 
             <TextView
+                style="@style/SearchTVStyle"
                 android:id="@+id/tv_placeholder"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/ys_display_medium"
                 android:gravity="center_horizontal"
-                android:textColor="?attr/colorOnSecondary"
-                android:textSize="19sp"
                 tools:text="@string/bad_connection" />
 
             <com.google.android.material.button.MaterialButton
+                style="@style/SearchButtonStyle"
                 android:id="@+id/button_placeholder"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:elevation="0dp"
-                android:fontFamily="@font/ys_display_medium"
-                android:insetTop="0dp"
-                android:insetBottom="0dp"
-                android:letterSpacing="0"
-                android:text="@string/reload"
-                android:textAllCaps="false"
-                android:textSize="14sp"
-                app:iconPadding="0dp"
-                app:cornerRadius="54dp"
-                android:paddingHorizontal="14dp"
-                android:paddingVertical="10dp"
-                android:backgroundTint="?attr/colorOnSecondary"
-                android:textColor="?attr/colorSecondary"/>
+                android:text="@string/reload" />
         </LinearLayout>
 
     </FrameLayout>
+
+
 
 </LinearLayout>

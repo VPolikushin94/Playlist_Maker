@@ -12,7 +12,7 @@
     android:gravity="start">
 
     <ImageView
-        android:id="@+id/iv_track_image"
+        android:id="@+id/iv_track_item_image"
         android:layout_width="@dimen/track_image_size"
         android:layout_height="@dimen/track_image_size"
         android:src="@drawable/ic_song_placeholder"
@@ -25,7 +25,7 @@
         android:layout_weight="1"
         >
         <TextView
-            android:id="@+id/tv_track_name"
+            android:id="@+id/tv_track_item_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="?attr/colorOnSecondary"
@@ -43,7 +43,7 @@
             android:layout_marginBottom="6dp">
             <TextView
                 style="@style/UnderTrackNameTextStyle"
-                android:id="@+id/tv_artist_name"
+                android:id="@+id/tv_track_item_artist_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -57,7 +57,7 @@
                 android:contentDescription="@null" />
             <TextView
                 style="@style/UnderTrackNameTextStyle"
-                android:id="@+id/tv_track_time"
+                android:id="@+id/tv_track_item_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 tools:text="2:55"/>

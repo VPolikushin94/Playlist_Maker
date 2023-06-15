@@ -101,7 +101,7 @@
         app:layout_constraintStart_toEndOf="@id/gl_player_left_padding"
         app:layout_constraintEnd_toStartOf="@id/gl_player_right_padding"
         android:layout_marginTop="12dp"
-        tools:text="0:30" />
+        android:text="@string/track_current_time" />
 
     <TextView
         android:id="@+id/tv_duration"

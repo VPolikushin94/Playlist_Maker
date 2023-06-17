@@ -14,4 +14,8 @@
     <dimen name="setting_screen_padding_start">16dp</dimen>
     <dimen name="setting_screen_padding_end">12dp</dimen>
     <dimen name="track_image_size">45dp</dimen>
+    <dimen name="player_back_button_padding">4dp</dimen>
+    <dimen name="add_playlist_button_size">51dp</dimen>
+    <dimen name="player_padding">24dp</dimen>
+    <dimen name="track_info_padding">16dp</dimen>
 </resources>

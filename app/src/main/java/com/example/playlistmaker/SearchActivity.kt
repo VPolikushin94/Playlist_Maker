@@ -2,6 +2,7 @@ package com.example.playlistmaker
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Editable
@@ -80,11 +81,18 @@ class SearchActivity : AppCompatActivity() {
 
     private fun setTrackClickListener() {
         trackListAdapter.onTrackClickListener = {
-            searchHistory.addTrackToHistory(it)
+            clickTrack(it)
         }
         historyTrackListAdapter.onTrackClickListener = {
-            searchHistory.addTrackToHistory(it)
+            clickTrack(it)
         }
+    }
+
+    private fun clickTrack(track: Track) {
+        searchHistory.addTrackToHistory(track)
+        val playerActivity = Intent(this, AudioPlayerActivity::class.java)
+        playerActivity.putExtra(TRACK_INFO, track)
+        startActivity(playerActivity)
     }
 
     private fun setEditTextFocusChangeListener() {
@@ -298,6 +306,7 @@ class SearchActivity : AppCompatActivity() {
     companion object {
         private const val SEARCH_TEXT = "SEARCH_TEXT"
         private const val TRACK_LIST = "TRACK_LIST"
+        const val TRACK_INFO = "TRACK_INFO"
 
         const val SHARED_PREFERENCES = "SHARED_PREFERENCES"
     }

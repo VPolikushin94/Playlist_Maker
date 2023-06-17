@@ -29,4 +29,8 @@
     <string name="track_year">Год</string>
     <string name="track_genre">Жанр</string>
     <string name="track_current_time">0:00</string>
+    <string name="track_image">Track image</string>
+    <string name="add_button">add button</string>
+    <string name="play_button">play button</string>
+    <string name="add_to_favorite">add to favorite</string>
 </resources>

@@ -9,22 +9,22 @@
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/gl_player_left_padding"
         style="@style/PlayerGuidelineStyle"
-        app:layout_constraintGuide_begin="24dp" />
+        app:layout_constraintGuide_begin="@dimen/player_padding" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/gl_player_right_padding"
         style="@style/PlayerGuidelineStyle"
-        app:layout_constraintGuide_end="24dp" />
+        app:layout_constraintGuide_end="@dimen/player_padding" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/gl_track_info_left_padding"
         style="@style/PlayerGuidelineStyle"
-        app:layout_constraintGuide_begin="16dp" />
+        app:layout_constraintGuide_begin="@dimen/track_info_padding" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/gl_track_info_right_padding"
         style="@style/PlayerGuidelineStyle"
-        app:layout_constraintGuide_end="16dp" />
+        app:layout_constraintGuide_end="@dimen/track_info_padding" />
 
     <ImageButton
         android:id="@+id/button_player_back"
@@ -45,7 +45,8 @@
         app:layout_constraintEnd_toStartOf="@id/gl_player_right_padding"
         app:layout_constraintStart_toEndOf="@id/gl_player_left_padding"
         app:layout_constraintTop_toBottomOf="@id/button_player_back"
-        app:layout_constraintBottom_toTopOf="@id/tv_player_track_name"/>
+        app:layout_constraintBottom_toTopOf="@id/tv_player_track_name"
+        android:contentDescription="@string/track_image" />
 
     <TextView
         android:id="@+id/tv_player_track_name"
@@ -73,7 +74,8 @@
         app:layout_constraintStart_toEndOf="@id/gl_player_left_padding"
         app:layout_constraintEnd_toStartOf="@id/button_player_play"
         android:layout_marginTop="54dp"
-        app:layout_constraintHorizontal_chainStyle="spread_inside"/>
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        android:contentDescription="@string/add_button" />
 
     <ImageButton
         android:id="@+id/button_player_play"
@@ -84,14 +86,16 @@
         app:layout_constraintTop_toTopOf="@id/button_add_to_playlist"
         app:layout_constraintBottom_toBottomOf="@id/button_add_to_playlist"
         app:layout_constraintStart_toEndOf="@id/button_add_to_playlist"
-        app:layout_constraintEnd_toStartOf="@id/button_add_to_favorite"/>
+        app:layout_constraintEnd_toStartOf="@id/button_add_to_favorite"
+        android:contentDescription="@string/play_button" />
     <ImageButton
         android:id="@+id/button_add_to_favorite"
         style="@style/PlayerSmallButtonStyle"
         android:src="@drawable/ic_add_to_favorite"
         app:layout_constraintTop_toTopOf="@id/button_add_to_playlist"
         app:layout_constraintStart_toEndOf="@id/button_player_play"
-        app:layout_constraintEnd_toStartOf="@id/gl_player_right_padding"/>
+        app:layout_constraintEnd_toStartOf="@id/gl_player_right_padding"
+        android:contentDescription="@string/add_to_favorite" />
 
     <TextView
         android:id="@+id/tv_player_track_current_time"

@@ -2,7 +2,6 @@ package com.example.playlistmaker
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
@@ -12,8 +11,8 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import java.lang.RuntimeException
 import java.text.SimpleDateFormat
-import java.time.format.DateTimeFormatter
-import java.util.*
+import java.util.Locale
+
 
 class AudioPlayerActivity : AppCompatActivity() {
 

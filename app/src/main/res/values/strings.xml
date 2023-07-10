@@ -33,4 +33,5 @@
     <string name="add_button">add button</string>
     <string name="play_button">play button</string>
     <string name="add_to_favorite">add to favorite</string>
+    <string name="image_placeholder">image placeholder</string>
 </resources>

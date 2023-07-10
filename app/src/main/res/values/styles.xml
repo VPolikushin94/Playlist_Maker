@@ -52,7 +52,7 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:src">@drawable/ic_back_arrow</item>
-        <item name="android:background">?android:attr/selectableItemBackground</item>
+        <item name="android:background">?android:attr/selectableItemBackgroundBorderless</item>
         <item name="tint">?attr/colorOnSecondary</item>
         <item name="android:contentDescription">@string/back_button</item>
         <item name="android:padding">16dp</item>
@@ -131,7 +131,7 @@
     </style>
 
     <style name="PlayerTrackTextStyle">
-        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:fontFamily">@font/ys_display_medium</item>
         <item name="android:textColor">?attr/colorOnSecondary</item>

@@ -64,7 +64,17 @@
             app:tint="@color/search_hint" />
     </FrameLayout>
 
+    <ProgressBar
+        android:id="@+id/pb_search"
+        android:layout_width="@dimen/progress_bar_size"
+        android:layout_height="@dimen/progress_bar_size"
+        android:layout_gravity="center"
+        android:layout_marginTop="124dp"
+        android:indeterminateTint="@color/search_progress_bar"
+        android:visibility="gone"/>
+
     <FrameLayout
+        android:id="@+id/fl_search_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -129,7 +139,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:src="@drawable/ic_bad_connection_placeholder" />
+                android:src="@drawable/ic_bad_connection_placeholder"
+                android:contentDescription="@string/image_placeholder"/>
 
             <TextView
                 style="@style/SearchTVStyle"

@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
@@ -27,10 +29,8 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var etSearch: EditText
     private lateinit var buttonClear: ImageButton
     private lateinit var buttonSearchBack: ImageButton
-    private var searchText: String = ""
     private lateinit var rvTrackList: RecyclerView
     private lateinit var rvSearchHistory: RecyclerView
-    private var trackList = ArrayList<Track>()
     private lateinit var trackListAdapter: TrackListAdapter
     private lateinit var historyTrackListAdapter: HistoryTrackListAdapter
     private lateinit var llPlaceholder: LinearLayout
@@ -42,6 +42,15 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var nsvSearchHistory: NestedScrollView
     private lateinit var buttonClearHistory: Button
     private lateinit var sharedPrefsListener: SharedPreferences.OnSharedPreferenceChangeListener
+    private lateinit var flSearchContent: FrameLayout
+    private lateinit var pbSearch: ProgressBar
+    private var isClickAllowed = true
+    private var trackList = ArrayList<Track>()
+    private var searchText: String = ""
+    private var searchedText: String = ""
+    private val handler = Handler(Looper.getMainLooper())
+
+    private val searchRunnable = Runnable { search() }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -89,10 +98,21 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun clickTrack(track: Track) {
-        searchHistory.addTrackToHistory(track)
-        val playerActivity = Intent(this, AudioPlayerActivity::class.java)
-        playerActivity.putExtra(TRACK_INFO, track)
-        startActivity(playerActivity)
+        if(clickDebounce()) {
+            searchHistory.addTrackToHistory(track)
+            val playerActivity = Intent(this, AudioPlayerActivity::class.java)
+            playerActivity.putExtra(TRACK_INFO, track)
+            startActivity(playerActivity)
+        }
+    }
+
+    private fun clickDebounce() : Boolean {
+        val current = isClickAllowed
+        if (isClickAllowed) {
+            isClickAllowed = false
+            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY_MILLIS)
+        }
+        return current
     }
 
     private fun setEditTextFocusChangeListener() {
@@ -104,7 +124,9 @@ class SearchActivity : AppCompatActivity() {
                     showPlaceholder(SearchPlaceholder.PLACEHOLDER_HIDDEN)
                 }
             } else {
-                showPlaceholder(SearchPlaceholder.PLACEHOLDER_HIDDEN)
+                if(searchText.isEmpty()) {
+                    showPlaceholder(SearchPlaceholder.PLACEHOLDER_HIDDEN)
+                }
             }
         }
     }
@@ -132,12 +154,17 @@ class SearchActivity : AppCompatActivity() {
         rvSearchHistory = findViewById(R.id.rv_search_history)
         nsvSearchHistory = findViewById(R.id.nsv_search_history)
         buttonClearHistory = findViewById(R.id.button_clear_history)
+        flSearchContent = findViewById(R.id.fl_search_content)
+        pbSearch = findViewById(R.id.pb_search)
     }
 
     private fun setEditorActionListener() {
         etSearch.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                search()
+                handler.removeCallbacks(searchRunnable)
+                if(searchedText != searchText) {
+                    search()
+                }
                 etSearch.clearFocus()
             }
             false
@@ -145,31 +172,52 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun search() {
-        RetrofitInstance.api.search(searchText).enqueue(object : Callback<TracksResponse> {
-            override fun onResponse(
-                call: Call<TracksResponse>,
-                response: Response<TracksResponse>
-            ) {
-                if (response.code() == 200) {
-                    trackList.clear()
-                    if (response.body()?.trackList?.isNotEmpty() == true) {
-                        trackList.addAll(response.body()?.trackList!!)
-                        trackListAdapter.notifyDataSetChanged()
-                    }
-                    if (trackList.isEmpty()) {
-                        showPlaceholder(SearchPlaceholder.PLACEHOLDER_NOTHING_FOUND)
+        if (searchText.isNotEmpty()) {
+            searchedText = searchText
+            showProgressBar(true)
+            RetrofitInstance.api.search(searchText).enqueue(object : Callback<TracksResponse> {
+                override fun onResponse(
+                    call: Call<TracksResponse>,
+                    response: Response<TracksResponse>
+                ) {
+                    showProgressBar(false)
+                    if (response.code() == RESPONSE_OK) {
+                        trackList.clear()
+                        if (response.body()?.trackList?.isNotEmpty() == true) {
+                            trackList.addAll(response.body()?.trackList!!)
+                            trackListAdapter.notifyDataSetChanged()
+                        }
+                        if (trackList.isEmpty()) {
+                            showPlaceholder(SearchPlaceholder.PLACEHOLDER_NOTHING_FOUND)
+                        } else {
+                            showPlaceholder(SearchPlaceholder.PLACEHOLDER_HIDDEN)
+                        }
                     } else {
-                        showPlaceholder(SearchPlaceholder.PLACEHOLDER_HIDDEN)
+                        showPlaceholder(SearchPlaceholder.PLACEHOLDER_BAD_CONNECTION)
                     }
-                } else {
+                }
+
+                override fun onFailure(call: Call<TracksResponse>, t: Throwable) {
+                    showProgressBar(false)
                     showPlaceholder(SearchPlaceholder.PLACEHOLDER_BAD_CONNECTION)
                 }
-            }
+            })
+        }
+    }
 
-            override fun onFailure(call: Call<TracksResponse>, t: Throwable) {
-                showPlaceholder(SearchPlaceholder.PLACEHOLDER_BAD_CONNECTION)
-            }
-        })
+    private fun showProgressBar(isVisible: Boolean) {
+        if(isVisible) {
+            flSearchContent.isVisible = false
+            pbSearch.isVisible = true
+        } else {
+            pbSearch.isVisible = false
+            flSearchContent.isVisible = true
+        }
+    }
+
+    private fun searchDebounce() {
+        handler.removeCallbacks(searchRunnable)
+        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY_MILLIS)
     }
 
     private fun showPlaceholder(placeholderType: SearchPlaceholder) {
@@ -258,6 +306,8 @@ class SearchActivity : AppCompatActivity() {
                 buttonClear.visibility = clearButtonVisibility(s)
                 searchText = s.toString()
 
+                searchDebounce()
+
                 if(etSearch.hasFocus() && searchText.isEmpty()) {
                     if(historyTrackListAdapter.historyTrackList.isNotEmpty()) {
                         showPlaceholder(SearchPlaceholder.PLACEHOLDER_SEARCH_HISTORY)
@@ -309,5 +359,10 @@ class SearchActivity : AppCompatActivity() {
         const val TRACK_INFO = "TRACK_INFO"
 
         const val SHARED_PREFERENCES = "SHARED_PREFERENCES"
+
+        private const val CLICK_DEBOUNCE_DELAY_MILLIS = 1000L
+        private const val SEARCH_DEBOUNCE_DELAY_MILLIS = 2000L
+
+        private const val RESPONSE_OK = 200
     }
 }

@@ -39,6 +39,15 @@ class AudioPlayerActivity : AppCompatActivity() {
 
     private val handler = Handler(Looper.getMainLooper())
 
+    private val updateTimerTask = object : Runnable {
+        override fun run() {
+            if (playerCurrentState == AudioPlayerState.PLAYING) {
+                tvPlayerTrackCurrentTime.text = DateTimeUtil.getFormatTime(mediaPlayer.currentPosition)
+                handler.postDelayed(this, UPDATE_TIMER_DELAY_MILLIS)
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_audio_player)
@@ -95,7 +104,7 @@ class AudioPlayerActivity : AppCompatActivity() {
     private fun setContent() {
         tvPlayerTrackName.text = track.trackName
         tvPlayerArtistName.text = track.artistName
-        tvPlayerTrackTime.text = getFormatTime(track.trackTimeMillis)
+        tvPlayerTrackTime.text = DateTimeUtil.getFormatTime(track.trackTimeMillis)
         if (track.collectionName.isEmpty()) {
             groupPlayerTrackAlbum.isVisible = false
         } else {
@@ -125,7 +134,7 @@ class AudioPlayerActivity : AppCompatActivity() {
         mediaPlayer.setOnCompletionListener {
             playerCurrentState = AudioPlayerState.PREPARED
             buttonPlayerPlay.setImageResource(R.drawable.ic_play_button)
-            tvPlayerTrackCurrentTime.text = getFormatTime(TIME_START)
+            tvPlayerTrackCurrentTime.text = DateTimeUtil.getFormatTime(TIME_START)
         }
     }
 
@@ -139,23 +148,12 @@ class AudioPlayerActivity : AppCompatActivity() {
     private fun pausePlayer() {
         playerCurrentState = AudioPlayerState.PAUSED
         mediaPlayer.pause()
-        handler.removeCallbacks(createUpdateTimerTask())
+        handler.removeCallbacks(updateTimerTask)
         buttonPlayerPlay.setImageResource(R.drawable.ic_play_button)
     }
 
     private fun startTimer() {
-        handler.post(createUpdateTimerTask())
-    }
-
-    private fun createUpdateTimerTask(): Runnable {
-        return object : Runnable {
-            override fun run() {
-                if (playerCurrentState == AudioPlayerState.PLAYING) {
-                    tvPlayerTrackCurrentTime.text = getFormatTime(mediaPlayer.currentPosition)
-                    handler.postDelayed(this, UPDATE_TIMER_DELAY)
-                }
-            }
-        }
+        handler.post(updateTimerTask)
     }
 
     private fun playbackControl() {
@@ -165,9 +163,6 @@ class AudioPlayerActivity : AppCompatActivity() {
             else -> throw RuntimeException("Media Player is not prepared")
         }
     }
-
-    private fun getFormatTime(time: Int) =
-        SimpleDateFormat("mm:ss", Locale.getDefault()).format(time)
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -183,13 +178,14 @@ class AudioPlayerActivity : AppCompatActivity() {
         }
     }
 
+
     companion object {
         private const val FIRST_DIGIT_OF_YEAR = 0
         private const val LAST_DIGIT_OF_YEAR = 4
 
         private const val TRACK_INFO = "TRACK_INFO"
 
-        private const val UPDATE_TIMER_DELAY = 300L
+        private const val UPDATE_TIMER_DELAY_MILLIS = 300L
 
         private const val TIME_START = 0
     }

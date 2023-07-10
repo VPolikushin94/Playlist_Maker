@@ -110,7 +110,7 @@ class SearchActivity : AppCompatActivity() {
         val current = isClickAllowed
         if (isClickAllowed) {
             isClickAllowed = false
-            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY_MILLIS)
         }
         return current
     }
@@ -181,7 +181,7 @@ class SearchActivity : AppCompatActivity() {
                     response: Response<TracksResponse>
                 ) {
                     showProgressBar(false)
-                    if (response.code() == 200) {
+                    if (response.code() == RESPONSE_OK) {
                         trackList.clear()
                         if (response.body()?.trackList?.isNotEmpty() == true) {
                             trackList.addAll(response.body()?.trackList!!)
@@ -217,7 +217,7 @@ class SearchActivity : AppCompatActivity() {
 
     private fun searchDebounce() {
         handler.removeCallbacks(searchRunnable)
-        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
+        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY_MILLIS)
     }
 
     private fun showPlaceholder(placeholderType: SearchPlaceholder) {
@@ -360,7 +360,9 @@ class SearchActivity : AppCompatActivity() {
 
         const val SHARED_PREFERENCES = "SHARED_PREFERENCES"
 
-        private const val CLICK_DEBOUNCE_DELAY = 1000L
-        private const val SEARCH_DEBOUNCE_DELAY = 2000L
+        private const val CLICK_DEBOUNCE_DELAY_MILLIS = 1000L
+        private const val SEARCH_DEBOUNCE_DELAY_MILLIS = 2000L
+
+        private const val RESPONSE_OK = 200
     }
 }

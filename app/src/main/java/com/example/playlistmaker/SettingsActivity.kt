@@ -25,7 +25,7 @@ class SettingsActivity : AppCompatActivity() {
 
         switcherDarkTheme.isChecked = (applicationContext as App).isDarkTheme
 
-        switcherDarkTheme.setOnCheckedChangeListener { switcher, isChecked ->
+        switcherDarkTheme.setOnCheckedChangeListener { _, isChecked ->
             (applicationContext as App).switchTheme(isChecked)
         }
     }

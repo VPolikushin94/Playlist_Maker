@@ -1,10 +1,7 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.ui.player
 
-import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
@@ -12,12 +9,18 @@ import androidx.constraintlayout.widget.Group
 import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import java.text.SimpleDateFormat
-import java.util.Locale
+import com.example.playlistmaker.Creator
+import com.example.playlistmaker.util.DateTimeUtil
+import com.example.playlistmaker.R
+import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.presentation.api.player.AudioPlayerPresenter
+import com.example.playlistmaker.presentation.impl.AudioPlayerPresenterImpl
+import com.example.playlistmaker.presentation.api.player.AudioPlayerView
+import com.example.playlistmaker.ui.search.SearchActivity
 import kotlin.RuntimeException
 
 
-class AudioPlayerActivity : AppCompatActivity() {
+class AudioPlayerActivity : AppCompatActivity(), AudioPlayerView {
 
     private lateinit var buttonPlayerBack: ImageButton
     private lateinit var buttonPlayerPlay: ImageButton
@@ -34,40 +37,28 @@ class AudioPlayerActivity : AppCompatActivity() {
 
     private lateinit var track: Track
 
-    private val mediaPlayer = MediaPlayer()
-    private var playerCurrentState = AudioPlayerState.DEFAULT
+    private lateinit var audioPlayerPresenter: AudioPlayerPresenter
 
-    private val handler = Handler(Looper.getMainLooper())
-
-    private val updateTimerTask = object : Runnable {
-        override fun run() {
-            if (playerCurrentState == AudioPlayerState.PLAYING) {
-                tvPlayerTrackCurrentTime.text = DateTimeUtil.getFormatTime(mediaPlayer.currentPosition)
-                handler.postDelayed(this, UPDATE_TIMER_DELAY_MILLIS)
-            }
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_audio_player)
 
         parseIntent()
-        preparePlayer()
         setViews()
-        buttonPlayerPlay.isEnabled = false
+        audioPlayerPresenter = AudioPlayerPresenterImpl(track, Creator.audioPlayerInteractor, this)
         setContent()
         setButtonsClickListeners()
     }
 
     override fun onPause() {
         super.onPause()
-        pausePlayer()
+        audioPlayerPresenter.pause()
     }
 
     override fun onDestroy() {
+        audioPlayerPresenter.release()
         super.onDestroy()
-        mediaPlayer.release()
     }
 
     private fun setButtonsClickListeners() {
@@ -75,7 +66,7 @@ class AudioPlayerActivity : AppCompatActivity() {
             finish()
         }
         buttonPlayerPlay.setOnClickListener {
-            playbackControl()
+            audioPlayerPresenter.playbackControl()
         }
     }
 
@@ -124,46 +115,6 @@ class AudioPlayerActivity : AppCompatActivity() {
             .into(ivPlayerTrackImage)
     }
 
-    private fun preparePlayer() {
-        mediaPlayer.setDataSource(track.previewUrl)
-        mediaPlayer.prepareAsync()
-        mediaPlayer.setOnPreparedListener {
-            playerCurrentState = AudioPlayerState.PREPARED
-            buttonPlayerPlay.isEnabled = true
-        }
-        mediaPlayer.setOnCompletionListener {
-            playerCurrentState = AudioPlayerState.PREPARED
-            buttonPlayerPlay.setImageResource(R.drawable.ic_play_button)
-            tvPlayerTrackCurrentTime.text = DateTimeUtil.getFormatTime(TIME_START)
-        }
-    }
-
-    private fun startPlayer() {
-        playerCurrentState = AudioPlayerState.PLAYING
-        mediaPlayer.start()
-        startTimer()
-        buttonPlayerPlay.setImageResource(R.drawable.ic_pause_button)
-    }
-
-    private fun pausePlayer() {
-        playerCurrentState = AudioPlayerState.PAUSED
-        mediaPlayer.pause()
-        handler.removeCallbacks(updateTimerTask)
-        buttonPlayerPlay.setImageResource(R.drawable.ic_play_button)
-    }
-
-    private fun startTimer() {
-        handler.post(updateTimerTask)
-    }
-
-    private fun playbackControl() {
-        when(playerCurrentState) {
-            AudioPlayerState.PAUSED, AudioPlayerState.PREPARED -> startPlayer()
-            AudioPlayerState.PLAYING -> pausePlayer()
-            else -> throw RuntimeException("Media Player is not prepared")
-        }
-    }
-
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putParcelable(TRACK_INFO, track)
@@ -179,14 +130,26 @@ class AudioPlayerActivity : AppCompatActivity() {
     }
 
 
+    override fun showCurrentTrackTime(time: String) {
+        tvPlayerTrackCurrentTime.text = time
+    }
+
+    override fun setButtonPlayerPlayEnabled(isEnabled: Boolean) {
+        buttonPlayerPlay.isEnabled = isEnabled
+    }
+
+    override fun showPlayButtonState(isPlayBtn: Boolean) {
+        if (isPlayBtn) {
+            buttonPlayerPlay.setImageResource(R.drawable.ic_play_button)
+        } else {
+            buttonPlayerPlay.setImageResource(R.drawable.ic_pause_button)
+        }
+    }
+
     companion object {
         private const val FIRST_DIGIT_OF_YEAR = 0
         private const val LAST_DIGIT_OF_YEAR = 4
 
         private const val TRACK_INFO = "TRACK_INFO"
-
-        private const val UPDATE_TIMER_DELAY_MILLIS = 300L
-
-        private const val TIME_START = 0
     }
 }

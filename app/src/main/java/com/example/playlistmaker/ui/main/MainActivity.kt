@@ -1,10 +1,14 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.ui.main
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import com.example.playlistmaker.ui.library.LibraryActivity
+import com.example.playlistmaker.R
+import com.example.playlistmaker.ui.settings.SettingsActivity
+import com.example.playlistmaker.ui.search.SearchActivity
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -15,11 +19,9 @@ class MainActivity : AppCompatActivity() {
         val buttonLibrary = findViewById<Button>(R.id.button_library)
         val buttonSettings = findViewById<Button>(R.id.button_settings)
 
-        val buttonSearchOnClickListener = object : View.OnClickListener{
-            override fun onClick(v: View?) {
-                val searchIntent = Intent(this@MainActivity, SearchActivity::class.java)
-                startActivity(searchIntent)
-            }
+        val buttonSearchOnClickListener = View.OnClickListener {
+            val searchIntent = Intent(this, SearchActivity::class.java)
+            startActivity(searchIntent)
         }
 
         buttonSearch.setOnClickListener(buttonSearchOnClickListener)

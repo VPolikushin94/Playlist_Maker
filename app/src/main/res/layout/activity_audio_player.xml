@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AudioPlayerActivity">
+    tools:context=".ui.player.AudioPlayerActivity">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/gl_player_left_padding"
@@ -136,6 +136,12 @@
         style="@style/PlayerTrackInfoTextStyle"
         app:layout_constraintTop_toTopOf="@id/tv_album"
         app:layout_constraintEnd_toStartOf="@id/gl_track_info_right_padding"
+        app:layout_constraintStart_toEndOf="@id/tv_album"
+        android:layout_width="0dp"
+        android:textAlignment="viewEnd"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:layout_marginStart="6dp"
         tools:text="Yesterday (Remastered 2009)"/>
 
     <androidx.constraintlayout.widget.Group

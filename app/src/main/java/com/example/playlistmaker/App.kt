@@ -4,17 +4,21 @@ import android.app.Application
 import android.content.SharedPreferences
 import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatDelegate
+import com.example.playlistmaker.util.SharedPrefsManager
+
 
 class App : Application() {
 
     var isDarkTheme = false
-    private lateinit var sharedPrefs: SharedPreferences
+    private lateinit var themeSharedPrefs: SharedPreferences
 
     override fun onCreate() {
         super.onCreate()
+        SharedPrefsManager.init(applicationContext, SharedPrefsManager.THEME_SHARED_PREFERENCES)
+        SharedPrefsManager.init(applicationContext, SharedPrefsManager.SEARCH_SHARED_PREFERENCES)
 
-        sharedPrefs = getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE)
-        isDarkTheme = sharedPrefs.getBoolean(DARK_THEME, isDarkThemeDefault())
+        themeSharedPrefs = SharedPrefsManager.themeInstance ?: throw RuntimeException("Theme shared prefs did not init")
+        isDarkTheme = themeSharedPrefs.getBoolean(DARK_THEME, isDarkThemeDefault())
         switchTheme(isDarkTheme)
     }
 
@@ -27,7 +31,7 @@ class App : Application() {
             }
         )
         isDarkTheme = isDarkThemeEnabled
-        sharedPrefs.edit()
+        themeSharedPrefs.edit()
             .putBoolean(DARK_THEME, isDarkTheme)
             .apply()
     }
@@ -37,7 +41,6 @@ class App : Application() {
     }
 
     companion object {
-        private const val SHARED_PREFERENCES = "SHARED_PREFERENCES"
         private const val DARK_THEME = "DARK_THEME"
     }
 }

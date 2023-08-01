@@ -1,7 +1,6 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.domain.models
 
 import android.os.Parcelable
-import com.google.gson.Gson
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -11,12 +10,10 @@ data class Track(
     val artistName: String,
     val trackTimeMillis: Int,
     val artworkUrl100: String,
+    val artworkUrl512: String,
     val collectionName: String,
     val releaseDate: String,
     val primaryGenreName: String,
     val country: String,
     val previewUrl: String
-) : Parcelable {
-    val artworkUrl512
-        get() = artworkUrl100.replaceAfterLast('/', "512x512bb.jpg")
-}
+) : Parcelable

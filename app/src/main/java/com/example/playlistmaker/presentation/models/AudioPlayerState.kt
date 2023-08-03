@@ -1,4 +1,4 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.presentation.models
 
 enum class AudioPlayerState {
     DEFAULT, PREPARED, PLAYING, PAUSED

@@ -1,12 +1,9 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.presentation.ui.search
 
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
@@ -19,12 +16,19 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.RecyclerView
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.example.playlistmaker.Creator
+import com.example.playlistmaker.presentation.ui.search.adapter.HistoryTrackListAdapter
+import com.example.playlistmaker.R
+import com.example.playlistmaker.presentation.models.SearchPlaceholderState
+import com.example.playlistmaker.presentation.ui.search.adapter.TrackListAdapter
+import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.presentation.api.search.SearchPresenter
+import com.example.playlistmaker.presentation.api.search.SearchView
+import com.example.playlistmaker.presentation.impl.SearchPresenterImpl
+import com.example.playlistmaker.presentation.ui.player.AudioPlayerActivity
 
 
-class SearchActivity : AppCompatActivity() {
+class SearchActivity : AppCompatActivity(), SearchView {
 
     private lateinit var etSearch: EditText
     private lateinit var buttonClear: ImageButton
@@ -37,28 +41,19 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var buttonPlaceholder: Button
     private lateinit var ivPlaceholder: ImageView
     private lateinit var tvPlaceholder: TextView
-    private lateinit var searchHistory: SearchHistory
-    private lateinit var sharedPrefs: SharedPreferences
+
     private lateinit var nsvSearchHistory: NestedScrollView
     private lateinit var buttonClearHistory: Button
-    private lateinit var sharedPrefsListener: SharedPreferences.OnSharedPreferenceChangeListener
     private lateinit var flSearchContent: FrameLayout
     private lateinit var pbSearch: ProgressBar
-    private var isClickAllowed = true
-    private var trackList = ArrayList<Track>()
-    private var searchText: String = ""
-    private var searchedText: String = ""
-    private val handler = Handler(Looper.getMainLooper())
 
-    private val searchRunnable = Runnable { search() }
-
+    private lateinit var searchPresenter: SearchPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
-        setSharedPrefs()
-        searchHistory = SearchHistory(sharedPrefs)
+        searchPresenter = SearchPresenterImpl(Creator.searchInteractor, this)
 
         setViews()
         setRecyclerViewAdapters()
@@ -98,48 +93,29 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun clickTrack(track: Track) {
-        if(clickDebounce()) {
-            searchHistory.addTrackToHistory(track)
+        if (searchPresenter.clickDebounce()) {
+            searchPresenter.addTrackToHistory(track)
             val playerActivity = Intent(this, AudioPlayerActivity::class.java)
             playerActivity.putExtra(TRACK_INFO, track)
             startActivity(playerActivity)
         }
     }
 
-    private fun clickDebounce() : Boolean {
-        val current = isClickAllowed
-        if (isClickAllowed) {
-            isClickAllowed = false
-            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY_MILLIS)
-        }
-        return current
-    }
 
     private fun setEditTextFocusChangeListener() {
         etSearch.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus && searchText.isEmpty()) {
-                if(historyTrackListAdapter.historyTrackList.isNotEmpty()) {
-                    showPlaceholder(SearchPlaceholder.PLACEHOLDER_SEARCH_HISTORY)
+            if (hasFocus && searchPresenter.searchText.isEmpty()) {
+                if (historyTrackListAdapter.historyTrackList.isNotEmpty()) {
+                    showPlaceholder(SearchPlaceholderState.PLACEHOLDER_SEARCH_HISTORY)
                 } else {
-                    showPlaceholder(SearchPlaceholder.PLACEHOLDER_HIDDEN)
+                    showPlaceholder(SearchPlaceholderState.PLACEHOLDER_HIDDEN)
                 }
             } else {
-                if(searchText.isEmpty()) {
-                    showPlaceholder(SearchPlaceholder.PLACEHOLDER_HIDDEN)
+                if (searchPresenter.searchText.isEmpty()) {
+                    showPlaceholder(SearchPlaceholderState.PLACEHOLDER_HIDDEN)
                 }
             }
         }
-    }
-
-    private fun setSharedPrefs() {
-        sharedPrefs = getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE)
-        sharedPrefsListener =
-            SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
-                if (key == SearchHistory.SEARCH_HISTORY_KEY) {
-                    historyTrackListAdapter.notifyDataSetChanged()
-                }
-            }
-        sharedPrefs.registerOnSharedPreferenceChangeListener(sharedPrefsListener)
     }
 
     private fun setViews() {
@@ -161,52 +137,16 @@ class SearchActivity : AppCompatActivity() {
     private fun setEditorActionListener() {
         etSearch.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                handler.removeCallbacks(searchRunnable)
-                if(searchedText != searchText) {
-                    search()
-                }
+                searchPresenter.searchTrack()
                 etSearch.clearFocus()
             }
             false
         }
     }
 
-    private fun search() {
-        if (searchText.isNotEmpty()) {
-            searchedText = searchText
-            showProgressBar(true)
-            RetrofitInstance.api.search(searchText).enqueue(object : Callback<TracksResponse> {
-                override fun onResponse(
-                    call: Call<TracksResponse>,
-                    response: Response<TracksResponse>
-                ) {
-                    showProgressBar(false)
-                    if (response.code() == RESPONSE_OK) {
-                        trackList.clear()
-                        if (response.body()?.trackList?.isNotEmpty() == true) {
-                            trackList.addAll(response.body()?.trackList!!)
-                            trackListAdapter.notifyDataSetChanged()
-                        }
-                        if (trackList.isEmpty()) {
-                            showPlaceholder(SearchPlaceholder.PLACEHOLDER_NOTHING_FOUND)
-                        } else {
-                            showPlaceholder(SearchPlaceholder.PLACEHOLDER_HIDDEN)
-                        }
-                    } else {
-                        showPlaceholder(SearchPlaceholder.PLACEHOLDER_BAD_CONNECTION)
-                    }
-                }
 
-                override fun onFailure(call: Call<TracksResponse>, t: Throwable) {
-                    showProgressBar(false)
-                    showPlaceholder(SearchPlaceholder.PLACEHOLDER_BAD_CONNECTION)
-                }
-            })
-        }
-    }
-
-    private fun showProgressBar(isVisible: Boolean) {
-        if(isVisible) {
+    override fun showProgressBar(isVisible: Boolean) {
+        if (isVisible) {
             flSearchContent.isVisible = false
             pbSearch.isVisible = true
         } else {
@@ -215,32 +155,28 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    private fun searchDebounce() {
-        handler.removeCallbacks(searchRunnable)
-        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY_MILLIS)
-    }
 
-    private fun showPlaceholder(placeholderType: SearchPlaceholder) {
+    private fun showPlaceholder(placeholderType: SearchPlaceholderState) {
         when (placeholderType) {
-            SearchPlaceholder.PLACEHOLDER_HIDDEN -> {
+            SearchPlaceholderState.PLACEHOLDER_HIDDEN -> {
                 llPlaceholder.visibility = View.GONE
                 nsvSearchHistory.visibility = View.GONE
             }
-            SearchPlaceholder.PLACEHOLDER_NOTHING_FOUND -> {
+            SearchPlaceholderState.PLACEHOLDER_NOTHING_FOUND -> {
                 changePlaceholder(
                     true,
                     R.drawable.ic_nothing_found_placeholder,
                     R.string.nothing_found
                 )
             }
-            SearchPlaceholder.PLACEHOLDER_BAD_CONNECTION -> {
+            SearchPlaceholderState.PLACEHOLDER_BAD_CONNECTION -> {
                 changePlaceholder(
                     false,
                     R.drawable.ic_bad_connection_placeholder,
                     R.string.bad_connection
                 )
             }
-            SearchPlaceholder.PLACEHOLDER_SEARCH_HISTORY -> {
+            SearchPlaceholderState.PLACEHOLDER_SEARCH_HISTORY -> {
                 clearTrackList()
                 llPlaceholder.visibility = View.GONE
                 nsvSearchHistory.visibility = View.VISIBLE
@@ -265,11 +201,11 @@ class SearchActivity : AppCompatActivity() {
 
     private fun setRecyclerViewAdapters() {
         trackListAdapter = TrackListAdapter()
-        trackListAdapter.trackList = trackList
+        trackListAdapter.trackList = searchPresenter.trackList
         rvTrackList.adapter = trackListAdapter
 
         historyTrackListAdapter = HistoryTrackListAdapter()
-        historyTrackListAdapter.historyTrackList = searchHistory.getHistoryTrackList()
+        historyTrackListAdapter.historyTrackList = searchPresenter.getHistoryTrackList()
         rvSearchHistory.adapter = historyTrackListAdapter
     }
 
@@ -284,16 +220,16 @@ class SearchActivity : AppCompatActivity() {
             finish()
         }
         buttonPlaceholder.setOnClickListener {
-            search()
+            searchPresenter.searchTrack()
         }
-        buttonClearHistory.setOnClickListener{
-            showPlaceholder(SearchPlaceholder.PLACEHOLDER_HIDDEN)
-            searchHistory.clearHistoryTrackList()
+        buttonClearHistory.setOnClickListener {
+            showPlaceholder(SearchPlaceholderState.PLACEHOLDER_HIDDEN)
+            searchPresenter.clearHistoryTrackList()
         }
     }
 
     private fun clearTrackList() {
-        trackList.clear()
+        searchPresenter.trackList.clear()
         trackListAdapter.notifyDataSetChanged()
     }
 
@@ -304,18 +240,18 @@ class SearchActivity : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 buttonClear.visibility = clearButtonVisibility(s)
-                searchText = s.toString()
+                searchPresenter.searchText = s.toString()
 
-                searchDebounce()
+                searchPresenter.searchDebounce()
 
-                if(etSearch.hasFocus() && searchText.isEmpty()) {
-                    if(historyTrackListAdapter.historyTrackList.isNotEmpty()) {
-                        showPlaceholder(SearchPlaceholder.PLACEHOLDER_SEARCH_HISTORY)
+                if (etSearch.hasFocus() && searchPresenter.searchText.isEmpty()) {
+                    if (historyTrackListAdapter.historyTrackList.isNotEmpty()) {
+                        showPlaceholder(SearchPlaceholderState.PLACEHOLDER_SEARCH_HISTORY)
                     } else {
-                        showPlaceholder(SearchPlaceholder.PLACEHOLDER_HIDDEN)
+                        showPlaceholder(SearchPlaceholderState.PLACEHOLDER_HIDDEN)
                     }
                 } else {
-                    showPlaceholder(SearchPlaceholder.PLACEHOLDER_HIDDEN)
+                    showPlaceholder(SearchPlaceholderState.PLACEHOLDER_HIDDEN)
                 }
             }
 
@@ -341,28 +277,40 @@ class SearchActivity : AppCompatActivity() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString(SEARCH_TEXT, searchText)
-        outState.putParcelableArrayList(TRACK_LIST, trackList)
+        outState.putString(SEARCH_TEXT, searchPresenter.searchText)
+        outState.putParcelableArrayList(TRACK_LIST, searchPresenter.trackList)
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        searchText = savedInstanceState.getString(SEARCH_TEXT)!!
-        etSearch.setText(searchText)
-        savedInstanceState.getParcelableArrayList<Track>(TRACK_LIST)?.let { trackList.addAll(it) }
+        searchPresenter.searchText = savedInstanceState.getString(SEARCH_TEXT)!!
+        etSearch.setText(searchPresenter.searchText)
+        savedInstanceState.getParcelableArrayList<Track>(TRACK_LIST)?.let { searchPresenter.trackList.addAll(it) }
         trackListAdapter.notifyDataSetChanged()
+    }
+
+    override fun showSearchResult(
+        placeholderState: SearchPlaceholderState,
+        trackList: List<Track>
+    ) {
+        when (placeholderState) {
+            SearchPlaceholderState.PLACEHOLDER_HIDDEN ->
+                showPlaceholder(SearchPlaceholderState.PLACEHOLDER_HIDDEN)
+            SearchPlaceholderState.PLACEHOLDER_NOTHING_FOUND ->
+                showPlaceholder(SearchPlaceholderState.PLACEHOLDER_NOTHING_FOUND)
+            else -> showPlaceholder(SearchPlaceholderState.PLACEHOLDER_BAD_CONNECTION)
+        }
+
+        trackListAdapter.notifyDataSetChanged()
+    }
+
+    override fun updateHistoryTrackList() {
+        historyTrackListAdapter.notifyDataSetChanged()
     }
 
     companion object {
         private const val SEARCH_TEXT = "SEARCH_TEXT"
         private const val TRACK_LIST = "TRACK_LIST"
         const val TRACK_INFO = "TRACK_INFO"
-
-        const val SHARED_PREFERENCES = "SHARED_PREFERENCES"
-
-        private const val CLICK_DEBOUNCE_DELAY_MILLIS = 1000L
-        private const val SEARCH_DEBOUNCE_DELAY_MILLIS = 2000L
-
-        private const val RESPONSE_OK = 200
     }
 }

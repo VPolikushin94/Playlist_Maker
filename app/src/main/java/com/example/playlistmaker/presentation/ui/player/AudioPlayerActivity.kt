@@ -1,4 +1,4 @@
-package com.example.playlistmaker.ui.player
+package com.example.playlistmaker.presentation.ui.player
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -16,7 +16,7 @@ import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.api.player.AudioPlayerPresenter
 import com.example.playlistmaker.presentation.impl.AudioPlayerPresenterImpl
 import com.example.playlistmaker.presentation.api.player.AudioPlayerView
-import com.example.playlistmaker.ui.search.SearchActivity
+import com.example.playlistmaker.presentation.ui.search.SearchActivity
 import kotlin.RuntimeException
 
 

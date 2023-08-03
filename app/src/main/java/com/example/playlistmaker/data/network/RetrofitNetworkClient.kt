@@ -25,7 +25,6 @@ class RetrofitNetworkClient : NetworkClient {
             //TODO добавить проверку наличия сети
             val resp = api.search(dto.expression).execute()
             val body = resp.body() ?: Response()
-
             body.apply { resultCode = resp.code() }
         } else {
             Response().apply { resultCode = RESULT_ERROR }

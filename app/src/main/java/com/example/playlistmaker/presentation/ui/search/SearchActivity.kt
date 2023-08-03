@@ -1,9 +1,8 @@
-package com.example.playlistmaker.ui.search
+package com.example.playlistmaker.presentation.ui.search
 
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -18,15 +17,15 @@ import androidx.core.view.isVisible
 import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.Creator
-import com.example.playlistmaker.ui.search.adapter.HistoryTrackListAdapter
+import com.example.playlistmaker.presentation.ui.search.adapter.HistoryTrackListAdapter
 import com.example.playlistmaker.R
 import com.example.playlistmaker.presentation.models.SearchPlaceholderState
-import com.example.playlistmaker.ui.search.adapter.TrackListAdapter
+import com.example.playlistmaker.presentation.ui.search.adapter.TrackListAdapter
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.api.search.SearchPresenter
 import com.example.playlistmaker.presentation.api.search.SearchView
 import com.example.playlistmaker.presentation.impl.SearchPresenterImpl
-import com.example.playlistmaker.ui.player.AudioPlayerActivity
+import com.example.playlistmaker.presentation.ui.player.AudioPlayerActivity
 
 
 class SearchActivity : AppCompatActivity(), SearchView {

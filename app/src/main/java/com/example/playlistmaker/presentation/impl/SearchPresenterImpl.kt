@@ -2,14 +2,12 @@ package com.example.playlistmaker.presentation.impl
 
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import com.example.playlistmaker.domain.api.search.SearchInteractor
 import com.example.playlistmaker.domain.models.ResponseResult
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.api.search.SearchPresenter
 import com.example.playlistmaker.presentation.api.search.SearchView
 import com.example.playlistmaker.presentation.models.SearchPlaceholderState
-import com.example.playlistmaker.ui.search.SearchActivity
 
 class SearchPresenterImpl(
     private val searchInteractor: SearchInteractor,

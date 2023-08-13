@@ -4,6 +4,7 @@
     package="com.example.playlistmaker">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
     <application
         android:name=".App"
@@ -17,19 +18,19 @@
         android:theme="@style/Theme.PlaylistMaker"
         tools:targetApi="32">
         <activity
-            android:name="com.example.playlistmaker.presentation.ui.player.AudioPlayerActivity"
+            android:name="com.example.playlistmaker.ui.player.AudioPlayerActivity"
             android:exported="false" />
         <activity
-            android:name="com.example.playlistmaker.presentation.ui.library.LibraryActivity"
+            android:name="com.example.playlistmaker.ui.library.LibraryActivity"
             android:exported="false" />
         <activity
-            android:name="com.example.playlistmaker.presentation.ui.search.SearchActivity"
+            android:name="com.example.playlistmaker.ui.search.SearchActivity"
             android:exported="false" />
         <activity
-            android:name="com.example.playlistmaker.presentation.ui.settings.SettingsActivity"
+            android:name="com.example.playlistmaker.ui.settings.SettingsActivity"
             android:exported="false" />
         <activity
-            android:name="com.example.playlistmaker.presentation.ui.main.MainActivity"
+            android:name="com.example.playlistmaker.ui.main.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

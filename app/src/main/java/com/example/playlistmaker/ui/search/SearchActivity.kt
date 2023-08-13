@@ -9,16 +9,14 @@ import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.*
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.ui.search.adapter.HistoryTrackListAdapter
 import com.example.playlistmaker.R
+import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.ui.search.models.SearchPlaceholderState
 import com.example.playlistmaker.ui.search.adapter.TrackListAdapter
 import com.example.playlistmaker.domain.search.models.Track
@@ -29,32 +27,20 @@ import com.example.playlistmaker.ui.player.AudioPlayerActivity
 
 class SearchActivity : AppCompatActivity() {
 
-    private lateinit var etSearch: EditText
-    private lateinit var buttonClear: ImageButton
-    private lateinit var buttonSearchBack: ImageButton
-    private lateinit var rvTrackList: RecyclerView
-    private lateinit var rvSearchHistory: RecyclerView
     private lateinit var trackListAdapter: TrackListAdapter
     private lateinit var historyTrackListAdapter: HistoryTrackListAdapter
-    private lateinit var llPlaceholder: LinearLayout
-    private lateinit var buttonPlaceholder: Button
-    private lateinit var ivPlaceholder: ImageView
-    private lateinit var tvPlaceholder: TextView
 
-    private lateinit var nsvSearchHistory: NestedScrollView
-    private lateinit var buttonClearHistory: Button
-    private lateinit var flSearchContent: FrameLayout
-    private lateinit var pbSearch: ProgressBar
+    private lateinit var binding: ActivitySearchBinding
 
-   private lateinit var searchViewModel: SearchViewModel
+    private lateinit var searchViewModel: SearchViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_search)
+        binding = ActivitySearchBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         searchViewModel = ViewModelProvider(this, SearchViewModel.getSearchViewModel())[SearchViewModel::class.java]
 
-        setViews()
         setRecyclerViewAdapters()
         addTextWatcher()
         setButtonListeners()
@@ -64,7 +50,7 @@ class SearchActivity : AppCompatActivity() {
         setTrackClickListener()
 
         setEditTextFocusChangeListener()
-        etSearch.requestFocus()
+        binding.etSearch.requestFocus()
 
         setListTouchListeners()
 
@@ -75,13 +61,13 @@ class SearchActivity : AppCompatActivity() {
 
     @SuppressLint("ClickableViewAccessibility")
     private fun setListTouchListeners() {
-        nsvSearchHistory.setOnTouchListener { _, _ ->
+        binding.nsvSearchHistory.setOnTouchListener { _, _ ->
             hideKeyboard()
             false
         }
-        rvTrackList.setOnTouchListener { _, _ ->
+        binding.rvTrackList.setOnTouchListener { _, _ ->
             hideKeyboard()
-            etSearch.clearFocus()
+            binding.etSearch.clearFocus()
             false
         }
     }
@@ -107,7 +93,7 @@ class SearchActivity : AppCompatActivity() {
 
 
     private fun setEditTextFocusChangeListener() {
-        etSearch.setOnFocusChangeListener { _, hasFocus ->
+        binding.etSearch.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus && searchViewModel.searchText.isEmpty()) {
                 if (historyTrackListAdapter.historyTrackList.isNotEmpty()) {
                     showPlaceholder(SearchPlaceholderState.PLACEHOLDER_SEARCH_HISTORY)
@@ -122,27 +108,11 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    private fun setViews() {
-        etSearch = findViewById(R.id.et_search)
-        buttonClear = findViewById(R.id.button_clear)
-        buttonSearchBack = findViewById(R.id.button_search_back)
-        llPlaceholder = findViewById(R.id.ll_placeholder)
-        ivPlaceholder = findViewById(R.id.iv_placeholder)
-        tvPlaceholder = findViewById(R.id.tv_placeholder)
-        buttonPlaceholder = findViewById(R.id.button_placeholder)
-        rvTrackList = findViewById(R.id.rv_track_list)
-        rvSearchHistory = findViewById(R.id.rv_search_history)
-        nsvSearchHistory = findViewById(R.id.nsv_search_history)
-        buttonClearHistory = findViewById(R.id.button_clear_history)
-        flSearchContent = findViewById(R.id.fl_search_content)
-        pbSearch = findViewById(R.id.pb_search)
-    }
-
     private fun setEditorActionListener() {
-        etSearch.setOnEditorActionListener { _, actionId, _ ->
+        binding.etSearch.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 searchViewModel.searchTrack(true)
-                etSearch.clearFocus()
+                binding.etSearch.clearFocus()
             }
             false
         }
@@ -151,11 +121,11 @@ class SearchActivity : AppCompatActivity() {
 
     private fun showProgressBar(isVisible: Boolean) {
         if (isVisible) {
-            flSearchContent.isVisible = false
-            pbSearch.isVisible = true
+            binding.flSearchContent.isVisible = false
+            binding.pbSearch.isVisible = true
         } else {
-            pbSearch.isVisible = false
-            flSearchContent.isVisible = true
+            binding.pbSearch.isVisible = false
+            binding.flSearchContent.isVisible = true
         }
     }
 
@@ -163,8 +133,8 @@ class SearchActivity : AppCompatActivity() {
     private fun showPlaceholder(placeholderType: SearchPlaceholderState) {
         when (placeholderType) {
             SearchPlaceholderState.PLACEHOLDER_HIDDEN -> {
-                llPlaceholder.visibility = View.GONE
-                nsvSearchHistory.visibility = View.GONE
+                binding.llPlaceholder.visibility = View.GONE
+                binding.nsvSearchHistory.visibility = View.GONE
             }
             SearchPlaceholderState.PLACEHOLDER_NOTHING_FOUND -> {
                 changePlaceholder(
@@ -183,8 +153,8 @@ class SearchActivity : AppCompatActivity() {
             SearchPlaceholderState.PLACEHOLDER_SEARCH_HISTORY -> {
                 clearTrackList()
                 historyTrackListAdapter.notifyDataSetChanged()
-                llPlaceholder.visibility = View.GONE
-                nsvSearchHistory.visibility = View.VISIBLE
+                binding.llPlaceholder.visibility = View.GONE
+                binding.nsvSearchHistory.visibility = View.VISIBLE
             }
         }
     }
@@ -194,40 +164,40 @@ class SearchActivity : AppCompatActivity() {
         @DrawableRes image: Int,
         @StringRes text: Int
     ) {
-        nsvSearchHistory.visibility = View.GONE
+        binding.nsvSearchHistory.visibility = View.GONE
         clearTrackList()
 
-        ivPlaceholder.setImageResource(image)
-        tvPlaceholder.text = getString(text)
+        binding.ivPlaceholder.setImageResource(image)
+        binding.tvPlaceholder.text = getString(text)
 
-        buttonPlaceholder.isVisible = !isPlaceholderNothingFound
-        llPlaceholder.visibility = View.VISIBLE
+        binding.buttonPlaceholder.isVisible = !isPlaceholderNothingFound
+        binding.llPlaceholder.visibility = View.VISIBLE
     }
 
     private fun setRecyclerViewAdapters() {
         trackListAdapter = TrackListAdapter()
         trackListAdapter.trackList = searchViewModel.trackList
-        rvTrackList.adapter = trackListAdapter
+        binding.rvTrackList.adapter = trackListAdapter
 
         historyTrackListAdapter = HistoryTrackListAdapter()
         historyTrackListAdapter.historyTrackList = searchViewModel.getHistoryTrackList()
-        rvSearchHistory.adapter = historyTrackListAdapter
+        binding.rvSearchHistory.adapter = historyTrackListAdapter
     }
 
     private fun setButtonListeners() {
-        buttonClear.setOnClickListener {
+        binding.buttonClear.setOnClickListener {
             hideKeyboard()
-            etSearch.setText("")
+            binding.etSearch.setText("")
             clearTrackList()
-            etSearch.requestFocus()
+            binding.etSearch.requestFocus()
         }
-        buttonSearchBack.setOnClickListener {
+        binding.buttonSearchBack.setOnClickListener {
             finish()
         }
-        buttonPlaceholder.setOnClickListener {
+        binding.buttonPlaceholder.setOnClickListener {
             searchViewModel.searchTrack(false)
         }
-        buttonClearHistory.setOnClickListener {
+        binding.buttonClearHistory.setOnClickListener {
             showPlaceholder(SearchPlaceholderState.PLACEHOLDER_HIDDEN)
             searchViewModel.clearHistoryTrackList()
         }
@@ -244,12 +214,12 @@ class SearchActivity : AppCompatActivity() {
             }
 
             override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                buttonClear.visibility = clearButtonVisibility(s)
+                binding.buttonClear.visibility = clearButtonVisibility(s)
                 searchViewModel.searchText = s.toString()
 
                 searchViewModel.searchDebounce()
 
-                if (etSearch.hasFocus() && searchViewModel.searchText.isEmpty()) {
+                if (binding.etSearch.hasFocus() && searchViewModel.searchText.isEmpty()) {
                     if (historyTrackListAdapter.historyTrackList.isNotEmpty()) {
                         showPlaceholder(SearchPlaceholderState.PLACEHOLDER_SEARCH_HISTORY)
                     } else {
@@ -264,7 +234,7 @@ class SearchActivity : AppCompatActivity() {
             }
         }
 
-        etSearch.addTextChangedListener(textWatcher)
+        binding.etSearch.addTextChangedListener(textWatcher)
     }
 
     private fun clearButtonVisibility(s: CharSequence?): Int {
@@ -277,7 +247,7 @@ class SearchActivity : AppCompatActivity() {
 
     private fun hideKeyboard() {
         val keyboard = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        keyboard.hideSoftInputFromWindow(etSearch.windowToken, 0)
+        keyboard.hideSoftInputFromWindow(binding.etSearch.windowToken, 0)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -289,7 +259,7 @@ class SearchActivity : AppCompatActivity() {
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         searchViewModel.searchText = savedInstanceState.getString(SEARCH_TEXT)!!
-        etSearch.setText(searchViewModel.searchText)
+        binding.etSearch.setText(searchViewModel.searchText)
         savedInstanceState.getParcelableArrayList<Track>(TRACK_LIST)?.let { searchViewModel.trackList.addAll(it) }
         trackListAdapter.notifyDataSetChanged()
     }

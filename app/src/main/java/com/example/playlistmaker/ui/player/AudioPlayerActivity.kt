@@ -2,16 +2,13 @@ package com.example.playlistmaker.ui.player
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.constraintlayout.widget.Group
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.util.DateTimeUtil
 import com.example.playlistmaker.R
+import com.example.playlistmaker.databinding.ActivityAudioPlayerBinding
 import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.ui.player.view_model.AudioPlayerViewModel
 import com.example.playlistmaker.ui.player.models.AudioPlayerState
@@ -21,30 +18,19 @@ import kotlin.RuntimeException
 
 class AudioPlayerActivity : AppCompatActivity() {
 
-    private lateinit var buttonPlayerBack: ImageButton
-    private lateinit var buttonPlayerPlay: ImageButton
-    private lateinit var tvPlayerTrackName: TextView
-    private lateinit var tvPlayerArtistName: TextView
-    private lateinit var tvPlayerTrackCurrentTime: TextView
-    private lateinit var tvPlayerTrackTime: TextView
-    private lateinit var tvPlayerTrackAlbum: TextView
-    private lateinit var tvPlayerTrackYear: TextView
-    private lateinit var tvPlayerTrackGenre: TextView
-    private lateinit var tvPlayerTrackCountry: TextView
-    private lateinit var groupPlayerTrackAlbum: Group
-    private lateinit var ivPlayerTrackImage: ImageView
-
     private lateinit var track: Track
 
     private lateinit var playerViewModel: AudioPlayerViewModel
 
+    private lateinit var binding: ActivityAudioPlayerBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_audio_player)
+        binding = ActivityAudioPlayerBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         parseIntent()
-        setViews()
+
         playerViewModel = ViewModelProvider(this, AudioPlayerViewModel.getAudioPlayerFactory())[AudioPlayerViewModel::class.java]
         playerViewModel.prepare(track)
 
@@ -67,27 +53,12 @@ class AudioPlayerActivity : AppCompatActivity() {
     }
 
     private fun setButtonsClickListeners() {
-        buttonPlayerBack.setOnClickListener {
+        binding.buttonPlayerBack.setOnClickListener {
             finish()
         }
-        buttonPlayerPlay.setOnClickListener {
+        binding.buttonPlayerPlay.setOnClickListener {
             playerViewModel.playbackControl()
         }
-    }
-
-    private fun setViews() {
-        buttonPlayerBack = findViewById(R.id.button_player_back)
-        buttonPlayerPlay = findViewById(R.id.button_player_play)
-        tvPlayerTrackName = findViewById(R.id.tv_player_track_name)
-        tvPlayerArtistName = findViewById(R.id.tv_player_artist_name)
-        tvPlayerTrackCurrentTime = findViewById(R.id.tv_player_track_current_time)
-        tvPlayerTrackTime = findViewById(R.id.tv_player_track_time)
-        tvPlayerTrackAlbum = findViewById(R.id.tv_player_track_album)
-        tvPlayerTrackYear = findViewById(R.id.tv_player_track_year)
-        tvPlayerTrackGenre = findViewById(R.id.tv_player_track_genre)
-        tvPlayerTrackCountry = findViewById(R.id.tv_player_track_country)
-        groupPlayerTrackAlbum = findViewById(R.id.group_player_track_album)
-        ivPlayerTrackImage = findViewById(R.id.iv_player_track_image)
     }
 
     private fun parseIntent() {
@@ -98,26 +69,26 @@ class AudioPlayerActivity : AppCompatActivity() {
     }
 
     private fun setContent() {
-        tvPlayerTrackName.text = track.trackName
-        tvPlayerArtistName.text = track.artistName
-        tvPlayerTrackTime.text = DateTimeUtil.getFormatTime(track.trackTimeMillis)
+        binding.tvPlayerTrackName.text = track.trackName
+        binding.tvPlayerArtistName.text = track.artistName
+        binding.tvPlayerTrackTime.text = DateTimeUtil.getFormatTime(track.trackTimeMillis)
         if (track.collectionName.isEmpty()) {
-            groupPlayerTrackAlbum.isVisible = false
+            binding.groupPlayerTrackAlbum.isVisible = false
         } else {
-            groupPlayerTrackAlbum.isVisible = true
-            tvPlayerTrackAlbum.text = track.collectionName
+            binding.groupPlayerTrackAlbum.isVisible = true
+            binding.tvPlayerTrackAlbum.text = track.collectionName
         }
-        tvPlayerTrackYear.text =
+        binding.tvPlayerTrackYear.text =
             track.releaseDate.substring(FIRST_DIGIT_OF_YEAR, LAST_DIGIT_OF_YEAR)
-        tvPlayerTrackGenre.text = track.primaryGenreName
-        tvPlayerTrackCountry.text = track.country
+        binding.tvPlayerTrackGenre.text = track.primaryGenreName
+        binding.tvPlayerTrackCountry.text = track.country
 
         Glide.with(applicationContext)
             .load(track.artworkUrl512)
             .placeholder(R.drawable.ic_player_track_placeholder)
             .centerCrop()
             .transform(RoundedCorners(8))
-            .into(ivPlayerTrackImage)
+            .into(binding.ivPlayerTrackImage)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -136,20 +107,20 @@ class AudioPlayerActivity : AppCompatActivity() {
 
 
     private fun showCurrentTrackTime(time: String) {
-        tvPlayerTrackCurrentTime.text = time
+        binding.tvPlayerTrackCurrentTime.text = time
     }
 
     private fun showPlayButtonState(playerState: AudioPlayerState) {
         when(playerState) {
-            is AudioPlayerState.Default -> buttonPlayerPlay.isEnabled = false
+            is AudioPlayerState.Default -> binding.buttonPlayerPlay.isEnabled = false
             is AudioPlayerState.Prepared -> {
-                buttonPlayerPlay.isEnabled = true
-                buttonPlayerPlay.setImageResource(R.drawable.ic_play_button)
+                binding.buttonPlayerPlay.isEnabled = true
+                binding.buttonPlayerPlay.setImageResource(R.drawable.ic_play_button)
                 showCurrentTrackTime(DateTimeUtil.getFormatTime(TIME_START))
             }
-            is AudioPlayerState.Paused -> buttonPlayerPlay.setImageResource(R.drawable.ic_play_button)
+            is AudioPlayerState.Paused -> binding.buttonPlayerPlay.setImageResource(R.drawable.ic_play_button)
             is AudioPlayerState.Playing -> {
-                buttonPlayerPlay.setImageResource(R.drawable.ic_pause_button)
+                binding.buttonPlayerPlay.setImageResource(R.drawable.ic_pause_button)
                 showCurrentTrackTime(playerState.time)
             }
         }

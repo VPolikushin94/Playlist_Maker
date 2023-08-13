@@ -16,7 +16,7 @@ class SearchHistoryRepositoryImpl(private val sharedPrefs: SharedPreferences) :
             createTrackListFromJson(sharedPrefs.getString(SEARCH_HISTORY_KEY, "") ?: "")
     }
 
-    override fun getHistoryTrackList(): ArrayList<Track> {
+    override fun getHistoryTrackList(): List<Track> {
         return historyTrackList
     }
 

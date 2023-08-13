@@ -13,11 +13,11 @@ class TrackSearchRepositoryImpl(private val networkClient: NetworkClient) : Trac
 
     override fun searchTrack(expression: String): Resource<List<Track>> {
 
-        val resp = networkClient.doRequest(TrackSearchRequest(expression))
+        val response = networkClient.doRequest(TrackSearchRequest(expression))
 
-        return when(resp.resultCode) {
+        return when(response.resultCode) {
             NetworkResultCode.RESULT_OK -> {
-                val trackList = (resp as TrackSearchResponse).trackList.map { it.toTrack() }
+                val trackList = (response as TrackSearchResponse).trackList.map { it.toTrack() }
 
                 Resource.Success(trackList)
             }

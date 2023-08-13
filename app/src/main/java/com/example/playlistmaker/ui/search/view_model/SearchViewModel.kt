@@ -13,6 +13,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.playlistmaker.Creator
 import com.example.playlistmaker.domain.search.api.SearchInteractor
+import com.example.playlistmaker.domain.search.api.TracksConsumer
 import com.example.playlistmaker.domain.search.models.ConsumerData
 import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.ui.search.models.SearchScreenState
@@ -33,7 +34,7 @@ class SearchViewModel(private val searchInteractor: SearchInteractor) : ViewMode
     var trackList = ArrayList<Track>()
 
     fun getHistoryTrackList(): ArrayList<Track> {
-        return searchInteractor.getHistoryTrackList()
+        return searchInteractor.getHistoryTrackList() as ArrayList<Track>
     }
 
     fun addTrackToHistory(track: Track) {
@@ -55,7 +56,7 @@ class SearchViewModel(private val searchInteractor: SearchInteractor) : ViewMode
             _searchScreenState.value = SearchScreenState.Loading
             searchInteractor.searchTrack(
                 searchText,
-                object : SearchInteractor.TracksConsumer {
+                object : TracksConsumer {
                     override fun consume(consumerData: ConsumerData<List<Track>>) {
                         trackList.clear()
                         when (consumerData) {

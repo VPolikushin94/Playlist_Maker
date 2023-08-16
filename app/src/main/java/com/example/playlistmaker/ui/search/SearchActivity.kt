@@ -23,6 +23,7 @@ import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.ui.search.view_model.SearchViewModel
 import com.example.playlistmaker.ui.search.models.SearchScreenState
 import com.example.playlistmaker.ui.player.AudioPlayerActivity
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class SearchActivity : AppCompatActivity() {
@@ -32,14 +33,12 @@ class SearchActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySearchBinding
 
-    private lateinit var searchViewModel: SearchViewModel
+    private val searchViewModel: SearchViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        searchViewModel = ViewModelProvider(this, SearchViewModel.getSearchViewModel())[SearchViewModel::class.java]
 
         setRecyclerViewAdapters()
         addTextWatcher()

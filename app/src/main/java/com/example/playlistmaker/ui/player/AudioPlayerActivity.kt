@@ -13,6 +13,7 @@ import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.ui.player.view_model.AudioPlayerViewModel
 import com.example.playlistmaker.ui.player.models.AudioPlayerState
 import com.example.playlistmaker.ui.search.SearchActivity
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.RuntimeException
 
 
@@ -20,9 +21,10 @@ class AudioPlayerActivity : AppCompatActivity() {
 
     private lateinit var track: Track
 
-    private lateinit var playerViewModel: AudioPlayerViewModel
+    private val playerViewModel: AudioPlayerViewModel by viewModel()
 
     private lateinit var binding: ActivityAudioPlayerBinding
+    private var isActivityCreated = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,8 +33,12 @@ class AudioPlayerActivity : AppCompatActivity() {
 
         parseIntent()
 
-        playerViewModel = ViewModelProvider(this, AudioPlayerViewModel.getAudioPlayerFactory())[AudioPlayerViewModel::class.java]
-        playerViewModel.prepare(track)
+        isActivityCreated = checkSavedInstanceState(savedInstanceState)
+
+        if(!isActivityCreated) {
+            playerViewModel.prepare(track)
+            isActivityCreated = true
+        }
 
         setContent()
         setButtonsClickListeners()
@@ -42,14 +48,22 @@ class AudioPlayerActivity : AppCompatActivity() {
         }
     }
 
+    private fun checkSavedInstanceState(savedInstanceState: Bundle?): Boolean {
+        return if (savedInstanceState != null) {
+            savedInstanceState.getParcelable<Track>(TRACK_INFO)?.let {
+                track = it
+                setContent()
+                if (playerViewModel.playerState.value is AudioPlayerState.Paused) {
+                    showCurrentTrackTime((playerViewModel.playerState.value as AudioPlayerState.Paused).time)
+                }
+            }
+            savedInstanceState.getBoolean(IS_ACTIVITY_CREATED, false)
+        } else false
+    }
+
     override fun onPause() {
         super.onPause()
         playerViewModel.pause()
-    }
-
-    override fun onDestroy() {
-        playerViewModel.release()
-        super.onDestroy()
     }
 
     private fun setButtonsClickListeners() {
@@ -94,17 +108,8 @@ class AudioPlayerActivity : AppCompatActivity() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putParcelable(TRACK_INFO, track)
+        outState.putBoolean(IS_ACTIVITY_CREATED, isActivityCreated)
     }
-
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-
-        savedInstanceState.getParcelable<Track>(TRACK_INFO)?.let {
-            track = it
-            setContent()
-        }
-    }
-
 
     private fun showCurrentTrackTime(time: String) {
         binding.tvPlayerTrackCurrentTime.text = time
@@ -131,6 +136,7 @@ class AudioPlayerActivity : AppCompatActivity() {
         private const val LAST_DIGIT_OF_YEAR = 4
 
         private const val TRACK_INFO = "TRACK_INFO"
+        private const val IS_ACTIVITY_CREATED = "IS_ACTIVITY_CREATED"
 
         private const val TIME_START = 0
     }

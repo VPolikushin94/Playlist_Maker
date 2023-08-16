@@ -10,8 +10,8 @@ class AudioPlayerInteractorImpl(private val audioPlayerRepository: AudioPlayerRe
         return audioPlayerRepository.getTrackCurrentTime()
     }
 
-    override fun release() {
-        audioPlayerRepository.release()
+    override fun reset() {
+        audioPlayerRepository.reset()
     }
 
     override fun prepare(

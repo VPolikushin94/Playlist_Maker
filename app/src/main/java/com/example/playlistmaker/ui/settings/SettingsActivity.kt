@@ -5,10 +5,11 @@ import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
 import com.example.playlistmaker.databinding.ActivitySettingsBinding
 import com.example.playlistmaker.ui.settings.view_model.SettingsViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SettingsActivity : AppCompatActivity() {
 
-    private lateinit var settingsViewModel: SettingsViewModel
+    private val settingsViewModel: SettingsViewModel by viewModel()
 
     private lateinit var binding: ActivitySettingsBinding
 
@@ -18,8 +19,6 @@ class SettingsActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setButtonListeners()
-
-        settingsViewModel = ViewModelProvider(this, SettingsViewModel.getSettingsViewModel())[SettingsViewModel::class.java]
 
         binding.switcherTheme.isChecked = settingsViewModel.isDarkThemeOn()
 

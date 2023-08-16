@@ -4,5 +4,5 @@ sealed interface AudioPlayerState {
     object Default : AudioPlayerState
     object Prepared : AudioPlayerState
     data class Playing(val time: String) : AudioPlayerState
-    object Paused : AudioPlayerState
+    data class Paused(val time: String) : AudioPlayerState
 }

@@ -6,7 +6,7 @@ interface AudioPlayerRepository {
 
     fun prepare(url: String, callbackOnPrepared: () -> Unit, callbackOnCompletion: () -> Unit)
 
-    fun release()
+    fun reset()
 
     fun start()
 

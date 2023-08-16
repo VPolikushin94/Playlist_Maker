@@ -4,16 +4,14 @@ import android.media.MediaPlayer
 import com.example.playlistmaker.util.DateTimeUtil
 import com.example.playlistmaker.domain.player.api.AudioPlayerRepository
 
-class AudioPlayerRepositoryImpl : AudioPlayerRepository {
-
-    private lateinit var mediaPlayer: MediaPlayer
+class AudioPlayerRepositoryImpl(private val mediaPlayer: MediaPlayer) : AudioPlayerRepository {
 
     override fun getTrackCurrentTime(): String {
         return DateTimeUtil.getFormatTime(mediaPlayer.currentPosition)
     }
 
-    override fun release() {
-        mediaPlayer.release()
+    override fun reset() {
+        mediaPlayer.reset()
     }
 
     override fun prepare(
@@ -21,7 +19,6 @@ class AudioPlayerRepositoryImpl : AudioPlayerRepository {
         callbackOnPrepared: () -> Unit,
         callbackOnCompletion: () -> Unit
     ) {
-        mediaPlayer = MediaPlayer()
         mediaPlayer.setDataSource(url)
         mediaPlayer.prepareAsync()
         mediaPlayer.setOnPreparedListener {

@@ -11,14 +11,10 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 
-class RetrofitNetworkClient(private val context: Context) : NetworkClient {
-
-    private val retrofit = Retrofit.Builder()
-        .baseUrl(baseUrl)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-
-    val api: MusicApiService = retrofit.create(MusicApiService::class.java)
+class RetrofitNetworkClient(
+    private val context: Context,
+    private val apiService: MusicApiService
+) : NetworkClient {
 
     override fun doRequest(dto: Any): Response {
         if (!isConnected()) {
@@ -26,7 +22,7 @@ class RetrofitNetworkClient(private val context: Context) : NetworkClient {
         }
 
         return if (dto is TrackSearchRequest) {
-            val resp = api.search(dto.expression).execute()
+            val resp = apiService.search(dto.expression).execute()
             val body = resp.body() ?: Response()
             body.apply { resultCode = resp.code() }
         } else {
@@ -48,7 +44,4 @@ class RetrofitNetworkClient(private val context: Context) : NetworkClient {
         return false
     }
 
-    companion object {
-        private const val baseUrl = "https://itunes.apple.com/"
-    }
 }

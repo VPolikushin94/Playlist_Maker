@@ -4,20 +4,29 @@ import android.app.Application
 import android.content.SharedPreferences
 import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatDelegate
-import com.example.playlistmaker.util.SharedPrefsManager
+import com.example.playlistmaker.di.dataModule
+import com.example.playlistmaker.di.interactorModule
+import com.example.playlistmaker.di.repositoryModule
+import com.example.playlistmaker.di.viewModelModule
+import org.koin.android.ext.android.inject
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.startKoin
+
 
 
 class App : Application() {
 
     var isDarkTheme = false
-    private lateinit var themeSharedPrefs: SharedPreferences
+    private val themeSharedPrefs: SharedPreferences by inject()
 
     override fun onCreate() {
         super.onCreate()
-        SharedPrefsManager.init(applicationContext, SharedPrefsManager.THEME_SHARED_PREFERENCES)
-        SharedPrefsManager.init(applicationContext, SharedPrefsManager.SEARCH_SHARED_PREFERENCES)
 
-        themeSharedPrefs = SharedPrefsManager.themeInstance ?: throw RuntimeException("Theme shared prefs did not init")
+        startKoin {
+            androidContext(this@App)
+            modules(dataModule, repositoryModule, interactorModule, viewModelModule)
+        }
+
         isDarkTheme = themeSharedPrefs.getBoolean(DARK_THEME, isDarkThemeDefault())
         switchTheme(isDarkTheme)
     }

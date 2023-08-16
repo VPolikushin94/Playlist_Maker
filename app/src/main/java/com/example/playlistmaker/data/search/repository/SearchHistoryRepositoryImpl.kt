@@ -6,8 +6,10 @@ import com.example.playlistmaker.domain.search.models.Track
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
-class SearchHistoryRepositoryImpl(private val sharedPrefs: SharedPreferences) :
-    SearchHistoryRepository {
+class SearchHistoryRepositoryImpl(
+    private val sharedPrefs: SharedPreferences,
+    private val gson: Gson
+    ) : SearchHistoryRepository {
 
     private var historyTrackList: ArrayList<Track>
 
@@ -41,12 +43,12 @@ class SearchHistoryRepositoryImpl(private val sharedPrefs: SharedPreferences) :
     }
 
     private fun createJsonFromTrackList(trackList: ArrayList<Track>): String {
-        return Gson().toJson(trackList)
+        return gson.toJson(trackList)
     }
 
     private fun createTrackListFromJson(json: String): ArrayList<Track> {
         val type = object : TypeToken<ArrayList<Track>>() {}.type
-        return Gson().fromJson(json, type) ?: arrayListOf()
+        return gson.fromJson(json, type) ?: arrayListOf()
     }
 
     companion object {

@@ -4,7 +4,7 @@ interface AudioPlayerInteractor {
 
     fun getTrackCurrentTime(): String
 
-    fun release()
+    fun reset()
 
     fun prepare(url: String, callbackOnPrepared: () -> Unit, callbackOnCompletion: () -> Unit)
 

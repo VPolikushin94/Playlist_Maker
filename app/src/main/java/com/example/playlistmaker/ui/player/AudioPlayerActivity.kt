@@ -1,20 +1,18 @@
 package com.example.playlistmaker.ui.player
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.example.playlistmaker.util.DateTimeUtil
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityAudioPlayerBinding
 import com.example.playlistmaker.domain.search.models.Track
-import com.example.playlistmaker.ui.player.view_model.AudioPlayerViewModel
 import com.example.playlistmaker.ui.player.models.AudioPlayerState
+import com.example.playlistmaker.ui.player.view_model.AudioPlayerViewModel
 import com.example.playlistmaker.ui.search.SearchActivity
+import com.example.playlistmaker.util.DateTimeUtil
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import kotlin.RuntimeException
 
 
 class AudioPlayerActivity : AppCompatActivity() {
@@ -35,7 +33,7 @@ class AudioPlayerActivity : AppCompatActivity() {
 
         isActivityCreated = checkSavedInstanceState(savedInstanceState)
 
-        if(!isActivityCreated) {
+        if (!isActivityCreated) {
             playerViewModel.prepare(track)
             isActivityCreated = true
         }
@@ -85,7 +83,7 @@ class AudioPlayerActivity : AppCompatActivity() {
     private fun setContent() {
         binding.tvPlayerTrackName.text = track.trackName
         binding.tvPlayerArtistName.text = track.artistName
-        binding.tvPlayerTrackTime.text = DateTimeUtil.getFormatTime(track.trackTimeMillis)
+        binding.tvPlayerTrackTime.text = track.trackTimeMillis
         if (track.collectionName.isEmpty()) {
             binding.groupPlayerTrackAlbum.isVisible = false
         } else {
@@ -101,7 +99,11 @@ class AudioPlayerActivity : AppCompatActivity() {
             .load(track.artworkUrl512)
             .placeholder(R.drawable.ic_player_track_placeholder)
             .centerCrop()
-            .transform(RoundedCorners(8))
+            .transform(
+                RoundedCorners(
+                    resources.getDimensionPixelSize(R.dimen.player_album_radius)
+                )
+            )
             .into(binding.ivPlayerTrackImage)
     }
 
@@ -116,7 +118,7 @@ class AudioPlayerActivity : AppCompatActivity() {
     }
 
     private fun showPlayButtonState(playerState: AudioPlayerState) {
-        when(playerState) {
+        when (playerState) {
             is AudioPlayerState.Default -> binding.buttonPlayerPlay.isEnabled = false
             is AudioPlayerState.Prepared -> {
                 binding.buttonPlayerPlay.isEnabled = true

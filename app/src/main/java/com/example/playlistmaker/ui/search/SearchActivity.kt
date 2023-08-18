@@ -13,16 +13,15 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProvider
-import com.example.playlistmaker.ui.search.adapter.HistoryTrackListAdapter
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivitySearchBinding
-import com.example.playlistmaker.ui.search.models.SearchPlaceholderState
-import com.example.playlistmaker.ui.search.adapter.TrackListAdapter
 import com.example.playlistmaker.domain.search.models.Track
-import com.example.playlistmaker.ui.search.view_model.SearchViewModel
-import com.example.playlistmaker.ui.search.models.SearchScreenState
 import com.example.playlistmaker.ui.player.AudioPlayerActivity
+import com.example.playlistmaker.ui.search.adapter.HistoryTrackListAdapter
+import com.example.playlistmaker.ui.search.adapter.TrackListAdapter
+import com.example.playlistmaker.ui.search.models.SearchPlaceholderState
+import com.example.playlistmaker.ui.search.models.SearchScreenState
+import com.example.playlistmaker.ui.search.view_model.SearchViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 

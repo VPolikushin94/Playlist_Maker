@@ -3,10 +3,9 @@ package com.example.playlistmaker.ui.search.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.TrackItemBinding
-import com.example.playlistmaker.ui.search.TrackListViewHolder
 import com.example.playlistmaker.domain.search.models.Track
+import com.example.playlistmaker.ui.search.TrackListViewHolder
 
 class HistoryTrackListAdapter : RecyclerView.Adapter<TrackListViewHolder>() {
 

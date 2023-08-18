@@ -6,8 +6,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.playlistmaker.domain.player.api.AudioPlayerInteractor
-import com.example.playlistmaker.ui.player.models.AudioPlayerState
 import com.example.playlistmaker.domain.search.models.Track
+import com.example.playlistmaker.ui.player.models.AudioPlayerState
 
 class AudioPlayerViewModel(private val audioPlayerInteractor: AudioPlayerInteractor) : ViewModel() {
 

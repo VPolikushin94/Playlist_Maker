@@ -5,8 +5,8 @@ import com.example.playlistmaker.domain.search.api.SearchInteractor
 import com.example.playlistmaker.domain.search.api.TrackSearchRepository
 import com.example.playlistmaker.domain.search.api.TracksConsumer
 import com.example.playlistmaker.domain.search.models.ConsumerData
-import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.domain.search.models.Resource
+import com.example.playlistmaker.domain.search.models.Track
 
 class SearchInteractorImpl(
     private val searchHistoryRepository: SearchHistoryRepository,

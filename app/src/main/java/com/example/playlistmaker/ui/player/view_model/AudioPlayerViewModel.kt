@@ -5,13 +5,9 @@ import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.example.playlistmaker.Creator
 import com.example.playlistmaker.domain.player.api.AudioPlayerInteractor
-import com.example.playlistmaker.ui.player.models.AudioPlayerState
 import com.example.playlistmaker.domain.search.models.Track
+import com.example.playlistmaker.ui.player.models.AudioPlayerState
 
 class AudioPlayerViewModel(private val audioPlayerInteractor: AudioPlayerInteractor) : ViewModel() {
 
@@ -39,10 +35,6 @@ class AudioPlayerViewModel(private val audioPlayerInteractor: AudioPlayerInterac
         )
     }
 
-    fun release() {
-        audioPlayerInteractor.release()
-    }
-
     private fun start() {
         audioPlayerInteractor.start()
         startTimer()
@@ -52,7 +44,7 @@ class AudioPlayerViewModel(private val audioPlayerInteractor: AudioPlayerInterac
         if (_playerState.value is AudioPlayerState.Playing) { // т.к. метод вызывается из активити в onPause() и если плеер еще не был запущен, то выдается ошибка
             audioPlayerInteractor.pause()
         }
-        _playerState.value = AudioPlayerState.Paused
+        _playerState.value = AudioPlayerState.Paused(audioPlayerInteractor.getTrackCurrentTime())
         handler.removeCallbacks(updateTimerTask)
     }
 
@@ -68,13 +60,12 @@ class AudioPlayerViewModel(private val audioPlayerInteractor: AudioPlayerInterac
         handler.post(updateTimerTask)
     }
 
+    override fun onCleared() {
+        super.onCleared()
+        audioPlayerInteractor.reset()
+    }
+
     companion object {
         private const val UPDATE_TIMER_DELAY_MILLIS = 300L
-
-        fun getAudioPlayerFactory(): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                AudioPlayerViewModel(Creator.audioPlayerInteractor)
-            }
-        }
     }
 }

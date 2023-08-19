@@ -7,18 +7,12 @@ import com.example.playlistmaker.data.search.NetworkClient
 import com.example.playlistmaker.data.search.dto.Response
 import com.example.playlistmaker.data.search.dto.TrackSearchRequest
 import com.example.playlistmaker.util.NetworkResultCode
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 
-class RetrofitNetworkClient(private val context: Context) : NetworkClient {
-
-    private val retrofit = Retrofit.Builder()
-        .baseUrl(baseUrl)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-
-    val api: MusicApiService = retrofit.create(MusicApiService::class.java)
+class RetrofitNetworkClient(
+    private val context: Context,
+    private val apiService: MusicApiService
+) : NetworkClient {
 
     override fun doRequest(dto: Any): Response {
         if (!isConnected()) {
@@ -26,9 +20,13 @@ class RetrofitNetworkClient(private val context: Context) : NetworkClient {
         }
 
         return if (dto is TrackSearchRequest) {
-            val resp = api.search(dto.expression).execute()
-            val body = resp.body() ?: Response()
-            body.apply { resultCode = resp.code() }
+            try {
+                val resp = apiService.search(dto.expression).execute()
+                val body = resp.body() ?: Response()
+                body.apply { resultCode = resp.code() }
+            } catch (e: Throwable) {
+                Response().apply { resultCode = NetworkResultCode.RESULT_ERROR }
+            }
         } else {
             Response().apply { resultCode = NetworkResultCode.RESULT_ERROR }
         }
@@ -36,8 +34,10 @@ class RetrofitNetworkClient(private val context: Context) : NetworkClient {
 
     private fun isConnected(): Boolean {
         val connectivityManager = context.getSystemService(
-            Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val capabilities = connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+            Context.CONNECTIVITY_SERVICE
+        ) as ConnectivityManager
+        val capabilities =
+            connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
         if (capabilities != null) {
             when {
                 capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> return true
@@ -48,7 +48,4 @@ class RetrofitNetworkClient(private val context: Context) : NetworkClient {
         return false
     }
 
-    companion object {
-        private const val baseUrl = "https://itunes.apple.com/"
-    }
 }

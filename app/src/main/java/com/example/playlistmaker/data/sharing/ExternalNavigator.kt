@@ -14,7 +14,7 @@ class ExternalNavigator(private val context: Context) {
             putExtra(Intent.EXTRA_TEXT, url)
             type = "text/plain"
         }
-        context.startActivity(sendIntent)
+        startActivity(sendIntent)
     }
 
     fun openLicence(url: String) {
@@ -23,7 +23,7 @@ class ExternalNavigator(private val context: Context) {
             action = Intent.ACTION_VIEW
             data = Uri.parse(url)
         }
-        context.startActivity(licenceIntent)
+        startActivity(licenceIntent)
     }
 
     fun openSupport(emailData: EmailData) {
@@ -35,7 +35,14 @@ class ExternalNavigator(private val context: Context) {
             putExtra(Intent.EXTRA_SUBJECT, emailData.subject)
             putExtra(Intent.EXTRA_TEXT, emailData.text)
         }
-        context.startActivity(shareIntent)
+        startActivity(shareIntent)
     }
 
+    private fun startActivity(intent: Intent) {
+        try {
+            context.startActivity(intent)
+        } catch (e: Throwable){
+            return
+        }
+    }
 }

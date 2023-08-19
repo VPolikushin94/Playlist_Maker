@@ -34,4 +34,7 @@
     <string name="play_button">play button</string>
     <string name="add_to_favorite">add to favorite</string>
     <string name="image_placeholder">image placeholder</string>
+    <string name="open_license_error">Не удалось открыть лицензию</string>
+    <string name="share_app_error">Не удалось поделиться приложением</string>
+    <string name="open_support_error">Не удалось обратиться в поддержку</string>
 </resources>

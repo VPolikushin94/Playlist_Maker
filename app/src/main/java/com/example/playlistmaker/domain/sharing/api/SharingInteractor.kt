@@ -2,10 +2,10 @@ package com.example.playlistmaker.domain.sharing.api
 
 interface SharingInteractor {
 
-    fun shareApp()
+    fun shareApp(): Boolean
 
-    fun openLicence()
+    fun openLicence(): Boolean
 
-    fun openSupport()
+    fun openSupport(): Boolean
 
 }

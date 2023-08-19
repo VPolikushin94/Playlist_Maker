@@ -11,16 +11,16 @@ class SharingRepositoryImpl(
     private val externalNavigator: ExternalNavigator
 ) : SharingRepository {
 
-    override fun shareApp() {
-        externalNavigator.shareApp(getShareAppLink())
+    override fun shareApp(): Boolean {
+        return externalNavigator.shareApp(getShareAppLink())
     }
 
-    override fun openLicence() {
-        externalNavigator.openLicence(getLicenceLink())
+    override fun openLicence(): Boolean {
+        return externalNavigator.openLicence(getLicenceLink())
     }
 
-    override fun openSupport() {
-        externalNavigator.openSupport(getSupportEmailData())
+    override fun openSupport(): Boolean {
+        return externalNavigator.openSupport(getSupportEmailData())
     }
 
     private fun getShareAppLink(): String {

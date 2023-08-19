@@ -5,15 +5,15 @@ import com.example.playlistmaker.domain.sharing.api.SharingRepository
 
 class SharingInteractorImpl(private val sharingRepository: SharingRepository) : SharingInteractor {
 
-    override fun shareApp() {
-        sharingRepository.shareApp()
+    override fun shareApp(): Boolean {
+        return sharingRepository.shareApp()
     }
 
-    override fun openLicence() {
-        sharingRepository.openLicence()
+    override fun openLicence(): Boolean {
+        return sharingRepository.openLicence()
     }
 
-    override fun openSupport() {
-        sharingRepository.openSupport()
+    override fun openSupport(): Boolean {
+        return sharingRepository.openSupport()
     }
 }

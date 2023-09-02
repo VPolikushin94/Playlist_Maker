@@ -17,7 +17,7 @@ class LibraryActivity : AppCompatActivity() {
         binding = ActivityLibraryBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.viewPagerLibrary.adapter =
+        binding.vpLibrary.adapter =
             LibraryViewPagerAdapter(supportFragmentManager, lifecycle)
 
         setTabMediator()
@@ -33,7 +33,7 @@ class LibraryActivity : AppCompatActivity() {
 
     private fun setTabMediator() {
         tabMediator =
-            TabLayoutMediator(binding.tabLayoutLibrary, binding.viewPagerLibrary) { tab, position ->
+            TabLayoutMediator(binding.tlLibrary, binding.vpLibrary) { tab, position ->
                 when (position) {
                     LibraryScreens.FAVORITE_SCREEN.ordinal -> tab.text =
                         getString(R.string.favorite_tracks)

@@ -7,26 +7,26 @@ import com.example.playlistmaker.domain.sharing.models.EmailData
 
 class ExternalNavigator(private val context: Context) {
 
-    fun shareApp(url: String) {
+    fun shareApp(url: String): Boolean {
         val sendIntent: Intent = Intent().apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             action = Intent.ACTION_SEND
             putExtra(Intent.EXTRA_TEXT, url)
             type = "text/plain"
         }
-        startActivity(sendIntent)
+        return startActivity(sendIntent)
     }
 
-    fun openLicence(url: String) {
+    fun openLicence(url: String): Boolean {
         val licenceIntent = Intent().apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             action = Intent.ACTION_VIEW
             data = Uri.parse(url)
         }
-        startActivity(licenceIntent)
+        return startActivity(licenceIntent)
     }
 
-    fun openSupport(emailData: EmailData) {
+    fun openSupport(emailData: EmailData): Boolean {
         val shareIntent = Intent().apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             action = Intent.ACTION_SENDTO
@@ -35,14 +35,15 @@ class ExternalNavigator(private val context: Context) {
             putExtra(Intent.EXTRA_SUBJECT, emailData.subject)
             putExtra(Intent.EXTRA_TEXT, emailData.text)
         }
-        startActivity(shareIntent)
+        return startActivity(shareIntent)
     }
 
-    private fun startActivity(intent: Intent) {
-        try {
+    private fun startActivity(intent: Intent): Boolean {
+        return try {
             context.startActivity(intent)
+            true
         } catch (e: Throwable){
-            return
+            false
         }
     }
 }

@@ -34,4 +34,14 @@
     <string name="play_button">play button</string>
     <string name="add_to_favorite">add to favorite</string>
     <string name="image_placeholder">image placeholder</string>
+    <string name="open_license_error">Не удалось открыть лицензию</string>
+    <string name="share_app_error">Не удалось поделиться приложением</string>
+    <string name="open_support_error">Не удалось обратиться в поддержку</string>
+    <string name="favorites_empty_placeholder">Ваша медиатека пуста</string>
+    <string name="image_favorites_placeholder">image favorites placeholder</string>
+    <string name="image_playlists_placeholder">image playlists placeholder</string>
+    <string name="playlists_empty_placeholder">Вы не создали\nни одного плейлиста</string>
+    <string name="favorite_tracks">Избранные треки</string>
+    <string name="playlists">Плейлисты</string>
+    <string name="new_playlist">Новый плейлист</string>
 </resources>

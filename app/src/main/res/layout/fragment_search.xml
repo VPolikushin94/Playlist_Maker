@@ -5,21 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.search.SearchActivity">
+    tools:context=".ui.search.SearchFragment">
 
-    <LinearLayout
-        style="@style/LinearLayoutBackButtonStyle"
-        android:layout_marginBottom="12dp">
-
-        <ImageButton
-            android:id="@+id/button_search_back"
-            style="@style/ImageBackButtonStyle"
-            android:contentDescription="@string/search" />
-
-        <TextView
-            style="@style/TextBackButtonStyle"
-            android:text="@string/search" />
-    </LinearLayout>
+    <TextView
+        style="@style/TextHeaderStyle"
+        android:text="@string/search" />
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -38,18 +28,18 @@
             android:drawableTint="@color/search_hint"
             android:fontFamily="@font/ys_display_regular"
             android:hint="@string/search"
+            android:imeOptions="actionDone"
             android:importantForAutofill="no"
             android:inputType="text"
             android:maxLines="1"
             android:paddingVertical="10dp"
             android:paddingStart="12dp"
             android:paddingEnd="0dp"
+            android:singleLine="true"
             android:textColor="@color/black"
             android:textColorHint="@color/search_hint"
-            android:textSize="@dimen/search_screen_hint_text_size"
             android:textCursorDrawable="@drawable/edittext_cursor"
-            android:imeOptions="actionDone"
-            android:singleLine="true"/>
+            android:textSize="@dimen/search_screen_hint_text_size" />
 
         <ImageButton
             android:id="@+id/button_clear"
@@ -71,7 +61,7 @@
         android:layout_gravity="center"
         android:layout_marginTop="124dp"
         android:indeterminateTint="@color/search_progress_bar"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <FrameLayout
         android:id="@+id/fl_search_content"
@@ -90,11 +80,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:layout_marginTop="26dp">
+                android:layout_marginTop="26dp"
+                android:orientation="vertical">
 
                 <TextView
                     style="@style/SearchTVStyle"
@@ -102,7 +93,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginBottom="20dp"
-                    android:text="@string/you_searched"/>
+                    android:text="@string/you_searched" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_search_history"
@@ -139,20 +130,20 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:src="@drawable/ic_bad_connection_placeholder"
-                android:contentDescription="@string/image_placeholder"/>
+                android:contentDescription="@string/image_placeholder"
+                android:src="@drawable/ic_bad_connection_placeholder" />
 
             <TextView
-                style="@style/SearchTVStyle"
                 android:id="@+id/tv_placeholder"
+                style="@style/SearchTVStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 tools:text="@string/bad_connection" />
 
             <com.google.android.material.button.MaterialButton
-                style="@style/SearchButtonStyle"
                 android:id="@+id/button_placeholder"
+                style="@style/SearchButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
@@ -160,7 +151,6 @@
         </LinearLayout>
 
     </FrameLayout>
-
 
 
 </LinearLayout>

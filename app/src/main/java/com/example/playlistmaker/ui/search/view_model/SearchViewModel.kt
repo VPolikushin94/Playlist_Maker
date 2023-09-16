@@ -72,6 +72,10 @@ class SearchViewModel(private val searchInteractor: SearchInteractor) : ViewMode
         }
     }
 
+    fun searchCancel() {
+        handler.removeCallbacks(searchRunnable)
+    }
+
     fun clickDebounce(): Boolean {
         val current = isClickAllowed
         if (isClickAllowed) {

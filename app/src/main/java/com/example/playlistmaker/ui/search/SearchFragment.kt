@@ -80,6 +80,11 @@ class SearchFragment : Fragment() {
 
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     private fun setListTouchListeners() {
         binding.nsvSearchHistory.setOnTouchListener { _, _ ->
@@ -288,8 +293,9 @@ class SearchFragment : Fragment() {
     private fun restoreInstanceState(savedInstanceState: Bundle) {
         searchViewModel.searchText = savedInstanceState.getString(SEARCH_TEXT)!!
         binding.etSearch.setText(searchViewModel.searchText)
-        savedInstanceState.getParcelableArrayList<Track>(TRACK_LIST)
-            ?.let { searchViewModel.trackList.addAll(it) }
+        savedInstanceState.getParcelableArrayList<Track>(TRACK_LIST)?.let {
+            searchViewModel.trackList.addAll(it)
+        }
         trackListAdapter.notifyDataSetChanged()
     }
 

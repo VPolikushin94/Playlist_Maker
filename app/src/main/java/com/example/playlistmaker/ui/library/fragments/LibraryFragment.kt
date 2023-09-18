@@ -30,8 +30,7 @@ class LibraryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.vpLibrary.adapter =
-            LibraryViewPagerAdapter(this)
+        binding.vpLibrary.adapter = LibraryViewPagerAdapter(this)
 
         setTabMediator()
     }
@@ -54,5 +53,6 @@ class LibraryFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         tabMediator.detach()
+        _binding = null
     }
 }

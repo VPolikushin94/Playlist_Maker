@@ -50,6 +50,11 @@ class SettingsFragment : Fragment() {
         }
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     private fun showToast(stringId: Int) {
         Toast.makeText(requireContext(), this.getText(stringId), Toast.LENGTH_SHORT).show()
     }

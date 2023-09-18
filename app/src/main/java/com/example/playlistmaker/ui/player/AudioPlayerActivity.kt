@@ -12,7 +12,6 @@ import com.example.playlistmaker.databinding.ActivityAudioPlayerBinding
 import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.ui.player.models.AudioPlayerState
 import com.example.playlistmaker.ui.player.view_model.AudioPlayerViewModel
-
 import com.example.playlistmaker.util.DateTimeUtil
 import org.koin.androidx.viewmodel.ext.android.viewModel
 

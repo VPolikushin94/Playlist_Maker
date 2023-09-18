@@ -25,6 +25,11 @@ class FavoritesFragment : Fragment() {
         return binding.root
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     companion object {
         fun newInstance(): FavoritesFragment{
             val args = Bundle()

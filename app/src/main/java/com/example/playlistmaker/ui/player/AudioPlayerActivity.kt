@@ -1,5 +1,7 @@
 package com.example.playlistmaker.ui.player
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
@@ -10,7 +12,6 @@ import com.example.playlistmaker.databinding.ActivityAudioPlayerBinding
 import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.ui.player.models.AudioPlayerState
 import com.example.playlistmaker.ui.player.view_model.AudioPlayerViewModel
-import com.example.playlistmaker.ui.search.SearchActivity
 import com.example.playlistmaker.util.DateTimeUtil
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -74,10 +75,10 @@ class AudioPlayerActivity : AppCompatActivity() {
     }
 
     private fun parseIntent() {
-        if (!intent.hasExtra(SearchActivity.TRACK_INFO)) {
+        if (!intent.hasExtra(TRACK_INFO)) {
             throw RuntimeException("Track info is absent")
         }
-        track = intent.getParcelableExtra(SearchActivity.TRACK_INFO)!!
+        track = intent.getParcelableExtra(TRACK_INFO)!!
     }
 
     private fun setContent() {
@@ -141,5 +142,11 @@ class AudioPlayerActivity : AppCompatActivity() {
         private const val IS_ACTIVITY_CREATED = "IS_ACTIVITY_CREATED"
 
         private const val TIME_START = 0
+
+        fun newInstance(context: Context, track: Track): Intent {
+            return Intent(context, AudioPlayerActivity::class.java).apply {
+                putExtra(TRACK_INFO, track)
+            }
+        }
     }
 }

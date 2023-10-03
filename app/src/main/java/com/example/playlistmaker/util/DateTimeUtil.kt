@@ -5,5 +5,5 @@ import java.util.Locale
 
 object DateTimeUtil {
     fun getFormatTime(time: Int): String =
-        SimpleDateFormat("m:ss", Locale.getDefault()).format(time)
+        SimpleDateFormat("m:ss", Locale.getDefault()).format(time) ?: "0:00"
 }

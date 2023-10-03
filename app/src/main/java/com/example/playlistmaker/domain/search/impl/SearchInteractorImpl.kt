@@ -3,14 +3,15 @@ package com.example.playlistmaker.domain.search.impl
 import com.example.playlistmaker.domain.search.api.SearchHistoryRepository
 import com.example.playlistmaker.domain.search.api.SearchInteractor
 import com.example.playlistmaker.domain.search.api.TrackSearchRepository
-import com.example.playlistmaker.domain.search.api.TracksConsumer
-import com.example.playlistmaker.domain.search.models.ConsumerData
 import com.example.playlistmaker.domain.search.models.Resource
+import com.example.playlistmaker.domain.search.models.SearchedData
 import com.example.playlistmaker.domain.search.models.Track
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class SearchInteractorImpl(
     private val searchHistoryRepository: SearchHistoryRepository,
-    private val trackSearchRepository: TrackSearchRepository
+    private val trackSearchRepository: TrackSearchRepository,
 ) : SearchInteractor {
 
     override fun getHistoryTrackList(): List<Track> {
@@ -25,17 +26,13 @@ class SearchInteractorImpl(
         searchHistoryRepository.clearHistoryTrackList()
     }
 
-    override fun searchTrack(
-        expression: String,
-        tracksConsumer: TracksConsumer
-    ) {
-        val t = Thread {
-            when(val resource = trackSearchRepository.searchTrack(expression)) {
-                is Resource.Success -> tracksConsumer.consume(ConsumerData.Success(resource.data))
-                is Resource.Error -> tracksConsumer.consume(ConsumerData.Error(resource.message))
+    override fun searchTrack(expression: String): Flow<SearchedData<List<Track>>> {
+        return trackSearchRepository.searchTrack(expression).map { result ->
+            when (result) {
+                is Resource.Success -> SearchedData.Success(result.data)
+                is Resource.Error -> SearchedData.Error(result.message)
             }
         }
-        t.start()
     }
 
 }

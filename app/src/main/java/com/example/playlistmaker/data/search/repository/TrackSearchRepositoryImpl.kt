@@ -8,20 +8,22 @@ import com.example.playlistmaker.domain.search.api.TrackSearchRepository
 import com.example.playlistmaker.domain.search.models.Resource
 import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.util.NetworkResultCode
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 class TrackSearchRepositoryImpl(private val networkClient: NetworkClient) : TrackSearchRepository {
 
-    override fun searchTrack(expression: String): Resource<List<Track>> {
+    override fun searchTrack(expression: String): Flow<Resource<List<Track>>> = flow {
 
         val response = networkClient.doRequest(TrackSearchRequest(expression))
 
-        return when(response.resultCode) {
+        when (response.resultCode) {
             NetworkResultCode.RESULT_OK -> {
                 val trackList = (response as TrackSearchResponse).trackList.map { it.toTrack() }
-                Resource.Success(trackList)
+                emit(Resource.Success(trackList))
             }
-            NetworkResultCode.RESULT_NO_INTERNET -> Resource.Error("No internet")
-            else -> Resource.Error("Server error")
+            NetworkResultCode.RESULT_NO_INTERNET -> emit(Resource.Error("No internet"))
+            else -> emit(Resource.Error("Server error"))
         }
     }
 }

@@ -5,7 +5,6 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,11 +44,6 @@ class SearchFragment : Fragment() {
     ): View {
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
         return binding.root
-    }
-
-    override fun onStop() {
-        super.onStop()
-        searchViewModel.searchCancel()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -219,7 +213,6 @@ class SearchFragment : Fragment() {
             binding.etSearch.setText("")
             clearTrackList()
             binding.etSearch.requestFocus()
-            searchViewModel.searchCancel()
         }
         binding.buttonPlaceholder.setOnClickListener {
             searchViewModel.searchTrack(false)
@@ -244,9 +237,7 @@ class SearchFragment : Fragment() {
                 binding.buttonClear.visibility = clearButtonVisibility(s)
                 searchViewModel.searchText = s.toString()
 
-                Log.d("SEARCH", "isFragmentCreated = $hasFragmentCreated")
                 if (!hasFragmentCreated) {
-                    Log.d("SEARCH", "serched")
                     searchViewModel.searchDebounce()
                 } else {
                     hasFragmentCreated = false

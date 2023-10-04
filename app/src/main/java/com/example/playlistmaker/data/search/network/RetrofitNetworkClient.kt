@@ -7,6 +7,8 @@ import com.example.playlistmaker.data.search.NetworkClient
 import com.example.playlistmaker.data.search.dto.Response
 import com.example.playlistmaker.data.search.dto.TrackSearchRequest
 import com.example.playlistmaker.util.NetworkResultCode
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 
 class RetrofitNetworkClient(
@@ -14,21 +16,22 @@ class RetrofitNetworkClient(
     private val apiService: MusicApiService
 ) : NetworkClient {
 
-    override fun doRequest(dto: Any): Response {
+    override suspend fun doRequest(dto: Any): Response {
         if (!isConnected()) {
             return Response().apply { resultCode = NetworkResultCode.RESULT_NO_INTERNET }
         }
 
-        return if (dto is TrackSearchRequest) {
+        if (dto !is TrackSearchRequest) {
+            return Response().apply { resultCode = NetworkResultCode.RESULT_ERROR }
+        }
+
+        return withContext(Dispatchers.IO) {
             try {
-                val resp = apiService.search(dto.expression).execute()
-                val body = resp.body() ?: Response()
-                body.apply { resultCode = resp.code() }
+                val resp = apiService.search(dto.expression)
+                resp.apply { resultCode = NetworkResultCode.RESULT_OK }
             } catch (e: Throwable) {
                 Response().apply { resultCode = NetworkResultCode.RESULT_ERROR }
             }
-        } else {
-            Response().apply { resultCode = NetworkResultCode.RESULT_ERROR }
         }
     }
 

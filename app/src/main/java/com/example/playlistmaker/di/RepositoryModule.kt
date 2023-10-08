@@ -1,10 +1,13 @@
 package com.example.playlistmaker.di
 
+import com.example.playlistmaker.data.library.db.TrackDbConvertor
+import com.example.playlistmaker.data.library.repository.FavoritesRepositoryImpl
 import com.example.playlistmaker.data.player.repository.AudioPlayerRepositoryImpl
 import com.example.playlistmaker.data.search.repository.SearchHistoryRepositoryImpl
 import com.example.playlistmaker.data.search.repository.TrackSearchRepositoryImpl
 import com.example.playlistmaker.data.settings.repository.SettingsRepositoryImpl
 import com.example.playlistmaker.data.sharing.repository.SharingRepositoryImpl
+import com.example.playlistmaker.domain.library.api.FavoritesRepository
 import com.example.playlistmaker.domain.player.api.AudioPlayerRepository
 import com.example.playlistmaker.domain.search.api.SearchHistoryRepository
 import com.example.playlistmaker.domain.search.api.TrackSearchRepository
@@ -18,7 +21,8 @@ val repositoryModule = module {
     single<SearchHistoryRepository> {
         SearchHistoryRepositoryImpl(
             sharedPrefs = get(),
-            gson = get()
+            gson = get(),
+            appDatabase = get()
         )
     }
 
@@ -30,7 +34,8 @@ val repositoryModule = module {
 
     single<TrackSearchRepository> {
         TrackSearchRepositoryImpl(
-            networkClient = get()
+            networkClient = get(),
+            appDatabase = get()
         )
     }
 
@@ -42,6 +47,15 @@ val repositoryModule = module {
         SharingRepositoryImpl(
             androidContext(),
             externalNavigator = get()
+        )
+    }
+
+    factory { TrackDbConvertor() }
+
+    single<FavoritesRepository> {
+        FavoritesRepositoryImpl(
+            appDatabase = get(),
+            trackDbConvertor = get()
         )
     }
 }

@@ -14,7 +14,7 @@ class SearchInteractorImpl(
     private val trackSearchRepository: TrackSearchRepository,
 ) : SearchInteractor {
 
-    override fun getHistoryTrackList(): List<Track> {
+    override fun getHistoryTrackList(): Flow<List<Track>> {
         return searchHistoryRepository.getHistoryTrackList()
     }
 
@@ -33,6 +33,10 @@ class SearchInteractorImpl(
                 is Resource.Error -> SearchedData.Error(result.message)
             }
         }
+    }
+
+    override fun updateSearchTrackList(): Flow<List<Track>> {
+        return trackSearchRepository.updateSearchTrackList()
     }
 
 }

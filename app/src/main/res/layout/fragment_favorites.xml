@@ -2,29 +2,63 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/ll_favorites_placeholder"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/ll_favorites"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
     android:orientation="vertical"
     android:visibility="visible">
 
-    <ImageView
-        android:id="@+id/iv_favorites_placeholder"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+    <ProgressBar
+        android:id="@+id/pb_favorites"
+        android:layout_width="@dimen/progress_bar_size"
+        android:layout_height="@dimen/progress_bar_size"
+        android:layout_gravity="center"
         android:layout_marginTop="106dp"
-        android:contentDescription="@string/image_favorites_placeholder"
-        android:src="@drawable/ic_nothing_found_placeholder" />
+        android:indeterminateTint="@color/search_progress_bar"
+        android:visibility="gone" />
 
-    <TextView
-        android:id="@+id/tv_favorites_placeholder"
-        style="@style/SearchTVStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:text="@string/favorites_empty_placeholder" />
+
+    <FrameLayout
+        android:id="@+id/fl_favorites_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_favorites_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="8dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/track_item" />
+
+        <LinearLayout
+            android:id="@+id/ll_favorites_placeholder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/iv_favorites_placeholder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="106dp"
+                android:layout_marginBottom="16dp"
+                android:contentDescription="@string/image_favorites_placeholder"
+                android:src="@drawable/ic_nothing_found_placeholder" />
+
+            <TextView
+                android:id="@+id/tv_favorites_placeholder"
+                style="@style/SearchTVStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/favorites_empty_placeholder" />
+        </LinearLayout>
+
+    </FrameLayout>
 
 
 </LinearLayout>

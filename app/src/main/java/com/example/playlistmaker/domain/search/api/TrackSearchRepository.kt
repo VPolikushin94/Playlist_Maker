@@ -6,4 +6,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface TrackSearchRepository {
     fun searchTrack(expression: String): Flow<Resource<List<Track>>>
+
+    fun updateSearchTrackList(): Flow<List<Track>>
 }

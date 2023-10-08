@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.playlistmaker.domain.library.api.FavoritesInteractor
 import com.example.playlistmaker.domain.player.api.AudioPlayerInteractor
 import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.ui.player.models.AudioPlayerState
@@ -11,14 +12,37 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class AudioPlayerViewModel(private val audioPlayerInteractor: AudioPlayerInteractor) : ViewModel() {
+class AudioPlayerViewModel(
+    private val audioPlayerInteractor: AudioPlayerInteractor,
+    private val favoritesInteractor: FavoritesInteractor
+) : ViewModel() {
 
     private val _playerState = MutableLiveData<AudioPlayerState>(AudioPlayerState.Default)
     val playerState: LiveData<AudioPlayerState> = _playerState
 
+    private val _favoriteBtnState = MutableLiveData(false)
+    val favoriteBtnState: LiveData<Boolean> = _favoriteBtnState
+
     private var timerJob: Job? = null
 
+    lateinit var track: Track
+
+    fun onFavoriteClicked(track: Track) {
+        viewModelScope.launch {
+            track.isFavorite = !track.isFavorite
+            if(track.isFavorite) {
+                favoritesInteractor.addTrack(track)
+            } else {
+                favoritesInteractor.deleteTrack(track)
+            }
+            _favoriteBtnState.postValue(track.isFavorite)
+        }
+
+    }
+
     fun prepare(track: Track) {
+        _favoriteBtnState.value = track.isFavorite
+
         audioPlayerInteractor.prepare(
             track.previewUrl,
             callbackOnPrepared = {

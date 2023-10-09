@@ -1,4 +1,4 @@
-package com.example.playlistmaker.ui.library.models
+package com.example.playlistmaker.ui.library.favorites.models
 
 sealed interface FavoritesScreenState{
     object Loading : FavoritesScreenState

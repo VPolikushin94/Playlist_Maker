@@ -1,4 +1,4 @@
-package com.example.playlistmaker.ui.library.fragments
+package com.example.playlistmaker.ui.library.playlists
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.playlistmaker.databinding.FragmentPlaylistsBinding
-import com.example.playlistmaker.ui.library.view_model.PlaylistsViewModel
+import com.example.playlistmaker.ui.library.playlists.view_model.PlaylistsViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlaylistsFragment : Fragment() {
@@ -31,7 +31,7 @@ class PlaylistsFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance(): PlaylistsFragment{
+        fun newInstance(): PlaylistsFragment {
             val args = Bundle()
 
             val fragment = PlaylistsFragment()

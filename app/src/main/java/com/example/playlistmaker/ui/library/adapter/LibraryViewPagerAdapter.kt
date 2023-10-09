@@ -1,9 +1,9 @@
-package com.example.playlistmaker.ui.library
+package com.example.playlistmaker.ui.library.adapter
 
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.example.playlistmaker.ui.library.fragments.FavoritesFragment
-import com.example.playlistmaker.ui.library.fragments.PlaylistsFragment
+import com.example.playlistmaker.ui.library.favorites.FavoritesFragment
+import com.example.playlistmaker.ui.library.playlists.PlaylistsFragment
 import com.example.playlistmaker.ui.library.models.LibraryScreens
 
 class LibraryViewPagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {

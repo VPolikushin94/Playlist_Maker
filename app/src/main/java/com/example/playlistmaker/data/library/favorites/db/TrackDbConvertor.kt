@@ -1,6 +1,6 @@
-package com.example.playlistmaker.data.library.db
+package com.example.playlistmaker.data.library.favorites.db
 
-import com.example.playlistmaker.data.library.db.entity.TrackEntity
+import com.example.playlistmaker.data.library.favorites.db.entity.TrackEntity
 import com.example.playlistmaker.domain.search.models.Track
 import java.util.Calendar
 

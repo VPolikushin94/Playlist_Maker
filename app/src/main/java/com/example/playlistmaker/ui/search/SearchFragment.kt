@@ -31,8 +31,8 @@ class SearchFragment : Fragment() {
     private var _binding: FragmentSearchBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var trackListAdapter: TrackListAdapter
-    private lateinit var historyTrackListAdapter: HistoryTrackListAdapter
+    private var trackListAdapter: TrackListAdapter? = null
+    private var historyTrackListAdapter: HistoryTrackListAdapter? = null
 
     private val searchViewModel: SearchViewModel by viewModel()
 
@@ -74,8 +74,20 @@ class SearchFragment : Fragment() {
 
     }
 
+    override fun onStart() {
+        super.onStart()
+        if (searchViewModel.searchText.isNotEmpty()) {
+            searchViewModel.updateSearchTrackList()
+        }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
+        binding.rvTrackList.adapter = null
+        trackListAdapter = null
+
+        binding.rvSearchHistory.adapter = null
+        historyTrackListAdapter = null
         _binding = null
     }
 
@@ -93,10 +105,10 @@ class SearchFragment : Fragment() {
     }
 
     private fun setTrackClickListener() {
-        trackListAdapter.onTrackClickListener = {
+        trackListAdapter?.onTrackClickListener = {
             clickTrack(it)
         }
-        historyTrackListAdapter.onTrackClickListener = {
+        historyTrackListAdapter?.onTrackClickListener = {
             clickTrack(it)
         }
     }
@@ -110,20 +122,16 @@ class SearchFragment : Fragment() {
                     track
                 )
             )
-            historyTrackListAdapter.notifyDataSetChanged()
+            historyTrackListAdapter?.notifyDataSetChanged()
         }
     }
 
     private fun setEditTextFocusChangeListener() {
         binding.etSearch.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus && searchViewModel.searchText.isEmpty()) {
-                if (historyTrackListAdapter.historyTrackList.isNotEmpty()) {
+                if (!historyTrackListAdapter?.historyTrackList.isNullOrEmpty()) {
                     showPlaceholder(SearchPlaceholderState.PLACEHOLDER_SEARCH_HISTORY)
                 } else {
-                    showPlaceholder(SearchPlaceholderState.PLACEHOLDER_HIDDEN)
-                }
-            } else {
-                if (searchViewModel.searchText.isEmpty()) {
                     showPlaceholder(SearchPlaceholderState.PLACEHOLDER_HIDDEN)
                 }
             }
@@ -174,8 +182,6 @@ class SearchFragment : Fragment() {
             }
 
             SearchPlaceholderState.PLACEHOLDER_SEARCH_HISTORY -> {
-                clearTrackList()
-                historyTrackListAdapter.notifyDataSetChanged()
                 binding.llPlaceholder.visibility = View.GONE
                 binding.nsvSearchHistory.visibility = View.VISIBLE
             }
@@ -199,11 +205,11 @@ class SearchFragment : Fragment() {
 
     private fun setRecyclerViewAdapters() {
         trackListAdapter = TrackListAdapter()
-        trackListAdapter.trackList = searchViewModel.trackList
+        trackListAdapter?.trackList = searchViewModel.trackList
         binding.rvTrackList.adapter = trackListAdapter
 
         historyTrackListAdapter = HistoryTrackListAdapter()
-        historyTrackListAdapter.historyTrackList = searchViewModel.getHistoryTrackList()
+        historyTrackListAdapter?.historyTrackList = searchViewModel.historyTrackList
         binding.rvSearchHistory.adapter = historyTrackListAdapter
     }
 
@@ -211,6 +217,7 @@ class SearchFragment : Fragment() {
         binding.buttonClear.setOnClickListener {
             hideKeyboard()
             binding.etSearch.setText("")
+            searchViewModel.searchText = ""
             clearTrackList()
             binding.etSearch.requestFocus()
         }
@@ -225,7 +232,7 @@ class SearchFragment : Fragment() {
 
     private fun clearTrackList() {
         searchViewModel.trackList.clear()
-        trackListAdapter.notifyDataSetChanged()
+        trackListAdapter?.notifyDataSetChanged()
     }
 
     private fun addTextWatcher() {
@@ -244,11 +251,9 @@ class SearchFragment : Fragment() {
                 }
 
                 if (binding.etSearch.hasFocus() && searchViewModel.searchText.isEmpty()) {
-                    if (historyTrackListAdapter.historyTrackList.isNotEmpty()) {
-                        showPlaceholder(SearchPlaceholderState.PLACEHOLDER_SEARCH_HISTORY)
-                    } else {
-                        showPlaceholder(SearchPlaceholderState.PLACEHOLDER_HIDDEN)
-                    }
+                    searchViewModel.getHistoryTrackList()
+
+                    showPlaceholder(SearchPlaceholderState.PLACEHOLDER_HIDDEN)
                 } else {
                     showPlaceholder(SearchPlaceholderState.PLACEHOLDER_HIDDEN)
                 }
@@ -287,7 +292,7 @@ class SearchFragment : Fragment() {
         savedInstanceState.getParcelableArrayList<Track>(TRACK_LIST)?.let {
             searchViewModel.trackList.addAll(it)
         }
-        trackListAdapter.notifyDataSetChanged()
+        trackListAdapter?.notifyDataSetChanged()
     }
 
     private fun render(state: SearchScreenState) {
@@ -310,8 +315,14 @@ class SearchFragment : Fragment() {
                 showProgressBar(true)
                 showPlaceholder(SearchPlaceholderState.PLACEHOLDER_HIDDEN)
             }
+            is SearchScreenState.HistoryContent -> {
+                showProgressBar(false)
+                showPlaceholder(SearchPlaceholderState.PLACEHOLDER_SEARCH_HISTORY)
+                clearTrackList()
+                historyTrackListAdapter?.notifyDataSetChanged()
+            }
         }
-        trackListAdapter.notifyDataSetChanged()
+        trackListAdapter?.notifyDataSetChanged()
     }
 
     companion object {

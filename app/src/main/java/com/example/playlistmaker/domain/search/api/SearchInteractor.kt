@@ -6,11 +6,13 @@ import kotlinx.coroutines.flow.Flow
 
 interface SearchInteractor {
 
-    fun getHistoryTrackList(): List<Track>
+    fun getHistoryTrackList(): Flow<List<Track>>
 
     fun addTrackToHistory(track: Track)
 
     fun clearHistoryTrackList()
 
     fun searchTrack(expression: String): Flow<SearchedData<List<Track>>>
+
+    fun updateSearchTrackList(): Flow<List<Track>>
 }

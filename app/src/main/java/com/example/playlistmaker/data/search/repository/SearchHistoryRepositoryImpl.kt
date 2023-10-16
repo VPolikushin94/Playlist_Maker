@@ -1,14 +1,18 @@
 package com.example.playlistmaker.data.search.repository
 
 import android.content.SharedPreferences
+import com.example.playlistmaker.data.AppDatabase
 import com.example.playlistmaker.domain.search.api.SearchHistoryRepository
 import com.example.playlistmaker.domain.search.models.Track
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 class SearchHistoryRepositoryImpl(
     private val sharedPrefs: SharedPreferences,
-    private val gson: Gson
+    private val gson: Gson,
+    private val appDatabase: AppDatabase
     ) : SearchHistoryRepository {
 
     private var historyTrackList: ArrayList<Track>
@@ -18,8 +22,12 @@ class SearchHistoryRepositoryImpl(
             createTrackListFromJson(sharedPrefs.getString(SEARCH_HISTORY_KEY, "") ?: "")
     }
 
-    override fun getHistoryTrackList(): List<Track> {
-        return historyTrackList
+    override fun getHistoryTrackList(): Flow<List<Track>> = flow {
+        val tracksIdList = appDatabase.getTrackDao().getTracksIdList()
+        historyTrackList.forEach {
+            it.isFavorite = tracksIdList.contains(it.trackId)
+        }
+        emit(historyTrackList)
     }
 
     override fun addTrackToHistory(track: Track) {

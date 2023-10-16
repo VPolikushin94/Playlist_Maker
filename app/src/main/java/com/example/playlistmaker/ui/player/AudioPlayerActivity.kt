@@ -18,8 +18,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class AudioPlayerActivity : AppCompatActivity() {
 
-    private lateinit var track: Track
-
     private val playerViewModel: AudioPlayerViewModel by viewModel()
 
     private lateinit var binding: ActivityAudioPlayerBinding
@@ -35,7 +33,7 @@ class AudioPlayerActivity : AppCompatActivity() {
         isActivityCreated = checkSavedInstanceState(savedInstanceState)
 
         if (!isActivityCreated) {
-            playerViewModel.prepare(track)
+            playerViewModel.prepare(playerViewModel.track)
             isActivityCreated = true
         }
 
@@ -45,12 +43,16 @@ class AudioPlayerActivity : AppCompatActivity() {
         playerViewModel.playerState.observe(this) {
             showPlayButtonState(it)
         }
+
+        playerViewModel.favoriteBtnState.observe(this) {
+            showFavoriteButtonState(it)
+        }
     }
 
     private fun checkSavedInstanceState(savedInstanceState: Bundle?): Boolean {
         return if (savedInstanceState != null) {
             savedInstanceState.getParcelable<Track>(TRACK_INFO)?.let {
-                track = it
+                playerViewModel.track = it
                 setContent()
                 if (playerViewModel.playerState.value is AudioPlayerState.Paused) {
                     showCurrentTrackTime((playerViewModel.playerState.value as AudioPlayerState.Paused).time)
@@ -72,32 +74,35 @@ class AudioPlayerActivity : AppCompatActivity() {
         binding.buttonPlayerPlay.setOnClickListener {
             playerViewModel.playbackControl()
         }
+        binding.buttonAddToFavorite.setOnClickListener {
+           playerViewModel.onFavoriteClicked(playerViewModel.track)
+        }
     }
 
     private fun parseIntent() {
         if (!intent.hasExtra(TRACK_INFO)) {
             throw RuntimeException("Track info is absent")
         }
-        track = intent.getParcelableExtra(TRACK_INFO)!!
+        playerViewModel.track = intent.getParcelableExtra(TRACK_INFO)!!
     }
 
     private fun setContent() {
-        binding.tvPlayerTrackName.text = track.trackName
-        binding.tvPlayerArtistName.text = track.artistName
-        binding.tvPlayerTrackTime.text = track.trackTimeMillis
-        if (track.collectionName.isEmpty()) {
+        binding.tvPlayerTrackName.text = playerViewModel.track.trackName
+        binding.tvPlayerArtistName.text = playerViewModel.track.artistName
+        binding.tvPlayerTrackTime.text = playerViewModel.track.trackTimeMillis
+        if (playerViewModel.track.collectionName.isEmpty()) {
             binding.groupPlayerTrackAlbum.isVisible = false
         } else {
             binding.groupPlayerTrackAlbum.isVisible = true
-            binding.tvPlayerTrackAlbum.text = track.collectionName
+            binding.tvPlayerTrackAlbum.text = playerViewModel.track.collectionName
         }
         binding.tvPlayerTrackYear.text =
-            track.releaseDate.substring(FIRST_DIGIT_OF_YEAR, LAST_DIGIT_OF_YEAR)
-        binding.tvPlayerTrackGenre.text = track.primaryGenreName
-        binding.tvPlayerTrackCountry.text = track.country
+            playerViewModel.track.releaseDate.substring(FIRST_DIGIT_OF_YEAR, LAST_DIGIT_OF_YEAR)
+        binding.tvPlayerTrackGenre.text = playerViewModel.track.primaryGenreName
+        binding.tvPlayerTrackCountry.text = playerViewModel.track.country
 
         Glide.with(applicationContext)
-            .load(track.artworkUrl512)
+            .load(playerViewModel.track.artworkUrl512)
             .placeholder(R.drawable.ic_player_track_placeholder)
             .centerCrop()
             .transform(
@@ -110,7 +115,7 @@ class AudioPlayerActivity : AppCompatActivity() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putParcelable(TRACK_INFO, track)
+        outState.putParcelable(TRACK_INFO, playerViewModel.track)
         outState.putBoolean(IS_ACTIVITY_CREATED, isActivityCreated)
     }
 
@@ -131,6 +136,14 @@ class AudioPlayerActivity : AppCompatActivity() {
                 binding.buttonPlayerPlay.setImageResource(R.drawable.ic_pause_button)
                 showCurrentTrackTime(playerState.time)
             }
+        }
+    }
+
+    private fun showFavoriteButtonState(isFavorite: Boolean) {
+        if(isFavorite) {
+            binding.buttonAddToFavorite.setImageResource(R.drawable.ic_add_to_favorite_red)
+        } else {
+            binding.buttonAddToFavorite.setImageResource(R.drawable.ic_add_to_favorite)
         }
     }
 

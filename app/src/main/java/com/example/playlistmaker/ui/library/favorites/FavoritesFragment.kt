@@ -6,11 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentFavoritesBinding
 import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.ui.library.favorites.models.FavoritesScreenState
 import com.example.playlistmaker.ui.library.favorites.view_model.FavoritesViewModel
-import com.example.playlistmaker.ui.player.AudioPlayerActivity
+import com.example.playlistmaker.ui.player.AudioPlayerFragment
 import com.example.playlistmaker.ui.search.adapter.TrackListAdapter
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -86,11 +88,9 @@ class FavoritesFragment : Fragment() {
 
     private fun clickTrack(track: Track) {
         if (favoritesViewModel.clickDebounce()) {
-            startActivity(
-                AudioPlayerActivity.newInstance(
-                    requireContext(),
-                    track
-                )
+            findNavController().navigate(
+                R.id.action_libraryFragment_to_audioPlayerFragment,
+                AudioPlayerFragment.getAudioPlayerBundle(track)
             )
         }
     }

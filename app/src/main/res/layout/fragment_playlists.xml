@@ -2,38 +2,76 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/ll_playlists_placeholder"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/ll_playlists"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?attr/background"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    android:background="?attr/background"
     android:visibility="visible">
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/button_playlists_placeholder"
+        android:id="@+id/button_create_playlist"
         style="@style/SearchButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:layout_marginBottom="46dp"
         android:text="@string/new_playlist" />
 
-    <ImageView
-        android:id="@+id/iv_playlists_placeholder"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:contentDescription="@string/image_playlists_placeholder"
-        android:src="@drawable/ic_nothing_found_placeholder" />
+    <ProgressBar
+        android:id="@+id/pb_playlists"
+        android:layout_width="@dimen/progress_bar_size"
+        android:layout_height="@dimen/progress_bar_size"
+        android:layout_gravity="center"
+        android:layout_marginTop="106dp"
+        android:indeterminateTint="@color/search_progress_bar"
+        android:visibility="gone" />
 
-    <TextView
-        android:id="@+id/tv_playlists_placeholder"
-        style="@style/SearchTVStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:text="@string/playlists_empty_placeholder" />
+    <FrameLayout
+        android:id="@+id/fl_playlists_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_playlists"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="16dp"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:spanCount="2"
+            android:paddingStart="16dp"
+            android:paddingEnd="8dp"
+            android:layout_gravity="center_horizontal"
+            tools:listitem="@layout/playlist_grid_item"/>
+
+        <LinearLayout
+            android:id="@+id/ll_playlists_placeholder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:layout_marginTop="46dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/iv_playlists_placeholder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:contentDescription="@string/image_playlists_placeholder"
+                android:src="@drawable/ic_nothing_found_placeholder" />
+
+            <TextView
+                android:id="@+id/tv_playlists_placeholder"
+                style="@style/SearchTVStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="@string/playlists_empty_placeholder" />
+        </LinearLayout>
+
+    </FrameLayout>
 
 
 </LinearLayout>

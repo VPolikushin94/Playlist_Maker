@@ -24,7 +24,7 @@ class TrackSearchRepositoryImpl(
 
         when (response.resultCode) {
             NetworkResultCode.RESULT_OK -> {
-                val tracksIdList = appDatabase.getTrackDao().getTracksIdList()
+                val tracksIdList = appDatabase.getFavoriteTracksDao().getTracksIdList()
                 trackList = (response as TrackSearchResponse).trackList.map {
                     if(tracksIdList.contains(it.toTrack().trackId)) {
                         it.toTrack().copy(isFavorite = true)
@@ -41,7 +41,7 @@ class TrackSearchRepositoryImpl(
     }
 
     override fun updateSearchTrackList(): Flow<List<Track>> = flow {
-        val tracksIdList = appDatabase.getTrackDao().getTracksIdList()
+        val tracksIdList = appDatabase.getFavoriteTracksDao().getTracksIdList()
         trackList.forEach {
             it.isFavorite = tracksIdList.contains(it.trackId)
         }

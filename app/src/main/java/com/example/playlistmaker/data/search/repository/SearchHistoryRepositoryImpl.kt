@@ -23,7 +23,7 @@ class SearchHistoryRepositoryImpl(
     }
 
     override fun getHistoryTrackList(): Flow<List<Track>> = flow {
-        val tracksIdList = appDatabase.getTrackDao().getTracksIdList()
+        val tracksIdList = appDatabase.getFavoriteTracksDao().getTracksIdList()
         historyTrackList.forEach {
             it.isFavorite = tracksIdList.contains(it.trackId)
         }

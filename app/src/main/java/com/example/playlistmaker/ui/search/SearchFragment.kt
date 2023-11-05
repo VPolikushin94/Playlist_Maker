@@ -14,10 +14,11 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.domain.search.models.Track
-import com.example.playlistmaker.ui.player.AudioPlayerActivity
+import com.example.playlistmaker.ui.player.AudioPlayerFragment
 import com.example.playlistmaker.ui.search.adapter.HistoryTrackListAdapter
 import com.example.playlistmaker.ui.search.adapter.TrackListAdapter
 import com.example.playlistmaker.ui.search.models.SearchPlaceholderState
@@ -36,8 +37,6 @@ class SearchFragment : Fragment() {
 
     private val searchViewModel: SearchViewModel by viewModel()
 
-    private var hasFragmentCreated = false
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
@@ -52,7 +51,6 @@ class SearchFragment : Fragment() {
         setRecyclerViewAdapters()
 
         if (savedInstanceState != null) {
-            hasFragmentCreated = true
             restoreInstanceState(savedInstanceState)
         }
 
@@ -116,12 +114,11 @@ class SearchFragment : Fragment() {
     private fun clickTrack(track: Track) {
         if (searchViewModel.clickDebounce()) {
             searchViewModel.addTrackToHistory(track)
-            startActivity(
-                AudioPlayerActivity.newInstance(
-                    requireContext(),
-                    track
-                )
+            findNavController().navigate(
+                R.id.action_searchFragment_to_audioPlayerFragment,
+                AudioPlayerFragment.getAudioPlayerBundle(track)
             )
+
             historyTrackListAdapter?.notifyDataSetChanged()
         }
     }
@@ -244,10 +241,10 @@ class SearchFragment : Fragment() {
                 binding.buttonClear.visibility = clearButtonVisibility(s)
                 searchViewModel.searchText = s.toString()
 
-                if (!hasFragmentCreated) {
+                if(searchViewModel.shouldSearch) {
                     searchViewModel.searchDebounce()
                 } else {
-                    hasFragmentCreated = false
+                    searchViewModel.shouldSearch = true
                 }
 
                 if (binding.etSearch.hasFocus() && searchViewModel.searchText.isEmpty()) {
@@ -272,6 +269,11 @@ class SearchFragment : Fragment() {
         } else {
             View.VISIBLE
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        searchViewModel.shouldSearch = false
     }
 
     private fun hideKeyboard() {

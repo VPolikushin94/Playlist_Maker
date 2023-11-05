@@ -16,7 +16,7 @@ class TrackListViewHolder(private val binding: TrackItemBinding) : RecyclerView.
             .centerCrop()
             .transform(
                 RoundedCorners(
-                    itemView.resources.getDimensionPixelSize(R.dimen.search_album_radius)
+                    itemView.resources.getDimensionPixelSize(R.dimen.search_vertical_album_radius)
                 )
             )
             .into(binding.ivTrackItemImage)

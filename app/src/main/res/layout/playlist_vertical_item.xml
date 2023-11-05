@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="13dp"
+    android:paddingEnd="12dp"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
+    android:orientation="horizontal"
+    android:gravity="start">
+
+    <ImageView
+        android:id="@+id/iv_playlist_item_image"
+        android:layout_width="@dimen/track_image_size"
+        android:layout_height="@dimen/track_image_size"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_song_placeholder"
+        android:contentDescription="@string/track_image_description" />
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginHorizontal="8dp"
+        android:layout_weight="1"
+        >
+        <TextView
+            android:id="@+id/tv_playlist_item_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="?attr/colorOnSecondary"
+            android:textSize="16sp"
+            android:fontFamily="@font/ys_display_regular"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="1dp"
+            android:maxLines="1"
+            android:ellipsize="end"
+            tools:text="Test song name"/>
+
+        <TextView
+            style="@style/UnderTrackNameTextStyle"
+            android:id="@+id/tv_playlist_item_tracks_counter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Test band name"/>
+    </LinearLayout>
+
+</LinearLayout>

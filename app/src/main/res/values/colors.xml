@@ -31,4 +31,5 @@
     <color name="button_create_disabled">#AEAFB4</color>
     <color name="overlay">#7F1A1B22</color>
     <color name="bottom_sheet_line">#E6E8EB</color>
+    <color name="alert_dialog_negative_button">#3772E7</color>
 </resources>

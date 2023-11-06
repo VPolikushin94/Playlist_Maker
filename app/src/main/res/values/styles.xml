@@ -173,4 +173,11 @@
     <style name="MySnackBar" parent="Widget.MaterialComponents.Snackbar">
         <item name="backgroundTint">?attr/colorOnSecondary</item>
     </style>
+
+    <style name="MyAlertDialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
+    </style>
+    <style name="NegativeButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/alert_dialog_negative_button</item>
+    </style>
 </resources>

@@ -91,7 +91,7 @@ class PlaylistCreatorFragment : Fragment() {
     }
 
     private fun setConfirmDialog() {
-        confirmDialog = MaterialAlertDialogBuilder(requireContext())
+        confirmDialog = MaterialAlertDialogBuilder(requireContext(), R.style.MyAlertDialog)
             .setTitle(getString(R.string.confirm_dialog_title))
             .setMessage(getString(R.string.confirm_dialog_message))
             .setNegativeButton(getString(R.string.confirm_dialog_negative)) { dialog, _ ->
@@ -100,6 +100,7 @@ class PlaylistCreatorFragment : Fragment() {
             .setPositiveButton(getString(R.string.confirm_dialog_positive)) { _, _ ->
                 findNavController().navigateUp()
             }
+
     }
 
     private fun isAnyData() = playlistImageUri != Uri.EMPTY ||

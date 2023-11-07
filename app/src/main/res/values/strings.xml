@@ -59,7 +59,7 @@
         <item quantity="two">%d трека</item>
         <item quantity="few">%d трека</item>
         <item quantity="many">%d треков</item>
-        <item quantity="other">%d треков111</item>
+        <item quantity="other">%d треков</item>
     </plurals>
     <string name="playlist_image_desc">playlist image</string>
 </resources>

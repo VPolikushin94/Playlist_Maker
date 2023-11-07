@@ -26,6 +26,8 @@ class SearchViewModel(private val searchInteractor: SearchInteractor) : ViewMode
 
     private var searchedText: String = ""
 
+    var shouldSearch = true
+
     var searchText: String = ""
     var trackList = ArrayList<Track>()
     var historyTrackList = ArrayList<Track>()
@@ -135,7 +137,6 @@ class SearchViewModel(private val searchInteractor: SearchInteractor) : ViewMode
     fun searchDebounce() {
         searchDebounce(searchedText)
     }
-
 
     companion object {
         private const val CLICK_DEBOUNCE_DELAY_MILLIS = 1000L

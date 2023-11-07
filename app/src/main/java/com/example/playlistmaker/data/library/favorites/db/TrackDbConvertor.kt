@@ -1,12 +1,12 @@
 package com.example.playlistmaker.data.library.favorites.db
 
-import com.example.playlistmaker.data.library.favorites.db.entity.TrackEntity
+import com.example.playlistmaker.data.library.favorites.db.entity.FavoriteTracksEntity
 import com.example.playlistmaker.domain.search.models.Track
 import java.util.Calendar
 
 class TrackDbConvertor {
-    fun map(track: Track): TrackEntity {
-        return TrackEntity(
+    fun map(track: Track): FavoriteTracksEntity {
+        return FavoriteTracksEntity(
             track.trackId,
             track.trackName,
             track.artistName,
@@ -23,20 +23,20 @@ class TrackDbConvertor {
         )
     }
 
-    fun map(trackEntity: TrackEntity): Track {
+    fun map(favoriteTracksEntity: FavoriteTracksEntity): Track {
         return Track(
-            trackEntity.trackId,
-            trackEntity.trackName,
-            trackEntity.artistName,
-            trackEntity.trackTimeMillis,
-            trackEntity.artworkUrl100,
-            trackEntity.artworkUrl512,
-            trackEntity.collectionName,
-            trackEntity.releaseDate,
-            trackEntity.primaryGenreName,
-            trackEntity.country,
-            trackEntity.previewUrl,
-            trackEntity.isFavorite
+            favoriteTracksEntity.trackId,
+            favoriteTracksEntity.trackName,
+            favoriteTracksEntity.artistName,
+            favoriteTracksEntity.trackTimeMillis,
+            favoriteTracksEntity.artworkUrl100,
+            favoriteTracksEntity.artworkUrl512,
+            favoriteTracksEntity.collectionName,
+            favoriteTracksEntity.releaseDate,
+            favoriteTracksEntity.primaryGenreName,
+            favoriteTracksEntity.country,
+            favoriteTracksEntity.previewUrl,
+            favoriteTracksEntity.isFavorite
         )
     }
 }

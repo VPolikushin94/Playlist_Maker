@@ -9,4 +9,6 @@
     <color name="search_under_track_name_text">#FFFFFF</color>
     <color name="search_placeholder">#FFFFFF</color>
     <color name="player_button">#40FFFFFF</color>
+    <color name="edit_text_border_color">#FFFFFF</color>
+    <color name="bottom_sheet_line">#FFFFFF</color>
 </resources>

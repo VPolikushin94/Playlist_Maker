@@ -5,16 +5,21 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.library.favorites.api.FavoritesInteractor
+import com.example.playlistmaker.domain.library.playlists.api.PlaylistsInteractor
+import com.example.playlistmaker.domain.library.playlists.models.AddTrackState
+import com.example.playlistmaker.domain.library.playlists.models.Playlist
 import com.example.playlistmaker.domain.player.api.AudioPlayerInteractor
 import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.ui.player.models.AudioPlayerState
+import com.example.playlistmaker.ui.player.models.BottomSheetContentState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class AudioPlayerViewModel(
     private val audioPlayerInteractor: AudioPlayerInteractor,
-    private val favoritesInteractor: FavoritesInteractor
+    private val favoritesInteractor: FavoritesInteractor,
+    private val playlistsInteractor: PlaylistsInteractor
 ) : ViewModel() {
 
     private val _playerState = MutableLiveData<AudioPlayerState>(AudioPlayerState.Default)
@@ -23,9 +28,14 @@ class AudioPlayerViewModel(
     private val _favoriteBtnState = MutableLiveData(false)
     val favoriteBtnState: LiveData<Boolean> = _favoriteBtnState
 
+    private val _bottomSheetContentState = MutableLiveData<BottomSheetContentState>()
+    val bottomSheetContentState: LiveData<BottomSheetContentState> = _bottomSheetContentState
+
     private var timerJob: Job? = null
 
     lateinit var track: Track
+
+    var isFragmentCreated = false
 
     fun onFavoriteClicked(track: Track) {
         viewModelScope.launch {
@@ -55,6 +65,19 @@ class AudioPlayerViewModel(
         )
     }
 
+    fun addTrackToPlaylist(playlist: Playlist, track: Track) {
+        _bottomSheetContentState.value = BottomSheetContentState.Loading
+        viewModelScope.launch {
+            val result = playlistsInteractor.addTrackToPlaylist(playlist, track)
+            if(result == AddTrackState.Success) {
+                _bottomSheetContentState.postValue(BottomSheetContentState.AddTrackState(false, playlist.name))
+            } else {
+                _bottomSheetContentState.postValue(BottomSheetContentState.AddTrackState(true, playlist.name))
+            }
+
+        }
+    }
+
     private fun start() {
         audioPlayerInteractor.start()
         startTimer()
@@ -64,8 +87,8 @@ class AudioPlayerViewModel(
         if (_playerState.value is AudioPlayerState.Playing) { // т.к. метод вызывается из активити в onPause() и если плеер еще не был запущен, то выдается ошибка
             audioPlayerInteractor.pause()
         }
-        _playerState.value = AudioPlayerState.Paused(audioPlayerInteractor.getTrackCurrentTime())
         timerJob?.cancel()
+        _playerState.value = AudioPlayerState.Paused(audioPlayerInteractor.getTrackCurrentTime())
     }
 
     fun playbackControl() {
@@ -83,6 +106,17 @@ class AudioPlayerViewModel(
                 _playerState.postValue(AudioPlayerState.Playing(audioPlayerInteractor.getTrackCurrentTime()))
                 delay(UPDATE_TIMER_DELAY_MILLIS)
             }
+        }
+    }
+
+    fun getPlaylists() {
+        _bottomSheetContentState.value = BottomSheetContentState.Loading
+
+        viewModelScope.launch {
+            playlistsInteractor.getPlaylists()
+                .collect {
+                    _bottomSheetContentState.postValue(BottomSheetContentState.Content(it))
+                }
         }
     }
 

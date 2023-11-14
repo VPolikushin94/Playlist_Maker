@@ -28,11 +28,12 @@ class RootActivity : AppCompatActivity() {
         bottomNavView.setupWithNavController(navController)
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            when(destination.id) {
-                R.id.playlistCreatorFragment, R.id.audioPlayerFragment -> {
+            when (destination.id) {
+                R.id.playlistCreatorFragment, R.id.audioPlayerFragment, R.id.playlistWatcherFragment, R.id.playlistRedactorFragment -> {
                     bottomNavView.isVisible = false
                     binding.separator.isVisible = false
                 }
+
                 else -> {
                     bottomNavView.isVisible = true
                     binding.separator.isVisible = true
@@ -47,7 +48,7 @@ class RootActivity : AppCompatActivity() {
     }
 
     private fun setRussianLocal(context: Context?): Context? {
-        return if(context != null) {
+        return if (context != null) {
             val local = Locale("ru")
             val config = context.resources.configuration
             config.setLocale(local)

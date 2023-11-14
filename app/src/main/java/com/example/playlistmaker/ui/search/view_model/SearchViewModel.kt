@@ -29,32 +29,19 @@ class SearchViewModel(private val searchInteractor: SearchInteractor) : ViewMode
     var shouldSearch = true
 
     var searchText: String = ""
-    var trackList = ArrayList<Track>()
-    var historyTrackList = ArrayList<Track>()
 
     init {
         getHistoryTrackList()
     }
 
-    private fun updateHistoryList() {
-        viewModelScope.launch {
-            historyTrackList.clear()
-            searchInteractor.getHistoryTrackList().collect{
-                historyTrackList.addAll(it)
-            }
-        }
-    }
-
     fun getHistoryTrackList(){
         _searchScreenState.value = SearchScreenState.Loading
         viewModelScope.launch {
-            historyTrackList.clear()
             searchInteractor.getHistoryTrackList().collect{
                 if(it.isEmpty()) {
-                    _searchScreenState.postValue(SearchScreenState.Content(false))
+                    _searchScreenState.postValue(SearchScreenState.Content(false, emptyList()))
                 } else {
-                    historyTrackList.addAll(it)
-                    _searchScreenState.postValue(SearchScreenState.HistoryContent)
+                    _searchScreenState.postValue(SearchScreenState.HistoryContent(it))
                 }
             }
         }
@@ -62,12 +49,11 @@ class SearchViewModel(private val searchInteractor: SearchInteractor) : ViewMode
 
     fun addTrackToHistory(track: Track) {
         searchInteractor.addTrackToHistory(track)
-        updateHistoryList()
     }
 
     fun clearHistoryTrackList() {
         searchInteractor.clearHistoryTrackList()
-        historyTrackList.clear()
+//        historyTrackList.clear()
     }
 
     fun updateSearchTrackList() {
@@ -75,15 +61,9 @@ class SearchViewModel(private val searchInteractor: SearchInteractor) : ViewMode
         viewModelScope.launch {
             searchInteractor.updateSearchTrackList()
                 .collect{
-                    updateResult(it)
+                    _searchScreenState.postValue(SearchScreenState.Content(false, it))
                 }
         }
-    }
-
-    private fun updateResult(updatedData: List<Track>) {
-        trackList.clear()
-        trackList.addAll(updatedData)
-        _searchScreenState.postValue(SearchScreenState.Content(false))
     }
 
     fun searchTrack(isBtnClicked: Boolean) {
@@ -104,15 +84,13 @@ class SearchViewModel(private val searchInteractor: SearchInteractor) : ViewMode
     }
 
     private fun processResult(searchedData: SearchedData<List<Track>>) {
-        trackList.clear()
         when (searchedData) {
             is SearchedData.Success -> {
                 if (searchedData.data.isEmpty()) {
-                    _searchScreenState.postValue(SearchScreenState.Content(true))
+                    _searchScreenState.postValue(SearchScreenState.Content(true, emptyList()))
                 } else {
                     searchedText = searchText
-                    trackList.addAll(searchedData.data)
-                    _searchScreenState.postValue(SearchScreenState.Content(false))
+                    _searchScreenState.postValue(SearchScreenState.Content(false, searchedData.data))
                 }
             }
 

@@ -45,6 +45,7 @@ class SettingsFragment : Fragment() {
                     ShareType.SHARE_APP -> showToast(R.string.share_app_error)
                     ShareType.OPEN_SUPPORT -> showToast(R.string.open_support_error)
                     ShareType.OPEN_LICENSE -> showToast(R.string.open_license_error)
+                    else -> throw RuntimeException("Wrong share type")
                 }
             }
         }

@@ -2,14 +2,13 @@ package com.example.playlistmaker.ui.search.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.ListAdapter
 import com.example.playlistmaker.databinding.TrackItemBinding
 import com.example.playlistmaker.domain.search.models.Track
-import com.example.playlistmaker.ui.search.TrackListViewHolder
+import com.example.playlistmaker.ui.search.diff_util.TrackDiffUtilCallback
+import com.example.playlistmaker.ui.search.view_holder.TrackListViewHolder
 
-class HistoryTrackListAdapter : RecyclerView.Adapter<TrackListViewHolder>() {
-
-    var historyTrackList = ArrayList<Track>()
+class HistoryTrackListAdapter : ListAdapter<Track, TrackListViewHolder>(TrackDiffUtilCallback()) {
 
     var onTrackClickListener: ((Track) -> Unit)? = null
 
@@ -20,14 +19,9 @@ class HistoryTrackListAdapter : RecyclerView.Adapter<TrackListViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: TrackListViewHolder, position: Int) {
-        holder.bind(historyTrackList[position])
+        holder.bind(getItem(position))
         holder.itemView.setOnClickListener {
-            onTrackClickListener?.invoke(historyTrackList[position])
+            onTrackClickListener?.invoke(getItem(position))
         }
     }
-
-    override fun getItemCount(): Int {
-        return historyTrackList.size
-    }
-
 }

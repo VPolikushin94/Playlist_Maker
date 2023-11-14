@@ -12,6 +12,7 @@ import androidx.room.ForeignKey
             parentColumns = ["playlistId"],
             childColumns = ["playlistForeignId"],
             onDelete = ForeignKey.CASCADE,
+            onUpdate = ForeignKey.CASCADE
         ),
         ForeignKey(
             entity = TrackEntity::class,

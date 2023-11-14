@@ -17,8 +17,6 @@ class FavoritesViewModel(
     private val _favoritesScreenState = MutableLiveData<FavoritesScreenState>()
     val favoritesScreenState: LiveData<FavoritesScreenState> = _favoritesScreenState
 
-    var favoritesList = ArrayList<Track>()
-
     private var isClickAllowed = true
 
     fun getFavoritesList() {
@@ -33,13 +31,10 @@ class FavoritesViewModel(
     }
 
     private fun processResult(trackList: List<Track>) {
-        favoritesList.clear()
-
         if (trackList.isEmpty()) {
-            _favoritesScreenState.postValue(FavoritesScreenState.Content(true))
+            _favoritesScreenState.postValue(FavoritesScreenState.Content(true, emptyList()))
         } else {
-            favoritesList.addAll(trackList)
-            _favoritesScreenState.postValue(FavoritesScreenState.Content(false))
+            _favoritesScreenState.postValue(FavoritesScreenState.Content(false, trackList))
         }
     }
 

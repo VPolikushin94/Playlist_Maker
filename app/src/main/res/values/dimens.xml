@@ -34,4 +34,5 @@
     <dimen name="playlist_creator_edit_text_horizontal_padding">16dp</dimen>
     <dimen name="playlist_creator_edit_text_horizontal_margin">16dp</dimen>
     <dimen name="bottom_sheet_corner_radius">16dp</dimen>
+    <dimen name="bottom_sheet_padding_top">24dp</dimen>
 </resources>

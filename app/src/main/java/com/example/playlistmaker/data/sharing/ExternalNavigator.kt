@@ -17,6 +17,16 @@ class ExternalNavigator(private val context: Context) {
         return startActivity(sendIntent)
     }
 
+    fun sharePlaylist(message: String): Boolean {
+        val sendIntent: Intent = Intent().apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, message)
+            type = "text/plain"
+        }
+        return startActivity(sendIntent)
+    }
+
     fun openLicence(url: String): Boolean {
         val licenceIntent = Intent().apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -42,7 +52,7 @@ class ExternalNavigator(private val context: Context) {
         return try {
             context.startActivity(intent)
             true
-        } catch (e: Throwable){
+        } catch (e: Throwable) {
             false
         }
     }

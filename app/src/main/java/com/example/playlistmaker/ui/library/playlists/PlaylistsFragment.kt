@@ -12,6 +12,7 @@ import com.example.playlistmaker.databinding.FragmentPlaylistsBinding
 import com.example.playlistmaker.ui.library.playlists.adapter.PlaylistGridAdapter
 import com.example.playlistmaker.ui.library.playlists.models.PlaylistsScreenState
 import com.example.playlistmaker.ui.library.playlists.view_model.PlaylistsViewModel
+import com.example.playlistmaker.ui.library.playlists.playlist_watcher.PlaylistWatcherFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlaylistsFragment : Fragment() {
@@ -59,7 +60,10 @@ class PlaylistsFragment : Fragment() {
         }
 
         playlistAdapter.onAlbumClickListener = {
-
+            findNavController().navigate(
+                R.id.action_libraryFragment_to_playlistWatcherFragment,
+                PlaylistWatcherFragment.getPlaylistWatcherBundle(it)
+            )
         }
     }
 

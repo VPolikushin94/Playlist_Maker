@@ -10,7 +10,7 @@ import com.example.playlistmaker.ui.library.playlists.playlist_creator.models.Pl
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class PlaylistCreatorViewModel(
+open class PlaylistCreatorViewModel(
     private val playlistsInteractor: PlaylistsInteractor
 ) : ViewModel() {
 
@@ -20,12 +20,14 @@ class PlaylistCreatorViewModel(
     val playlistCreatingState: LiveData<PlaylistCreatingState> = _playlistCreatingState
 
     fun addPlaylist(
+        playlistId: Int?,
         name: String,
         imgName: String,
         description: String
     ) {
         _playlistCreatingState.value = PlaylistCreatingState.Creating
         val playlist = Playlist(
+            playlistId = playlistId,
             name = name,
             imgName = imgName,
             description = description

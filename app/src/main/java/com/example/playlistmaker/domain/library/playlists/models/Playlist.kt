@@ -9,5 +9,6 @@ data class Playlist(
     val name: String,
     var description: String? = null,
     var imgName: String? = null,
-    var tracksCounter: Int? = null
+    var tracksCounter: Int? = null,
+    var playlistTime: Int? = null,
 ) : Parcelable

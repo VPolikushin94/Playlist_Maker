@@ -175,9 +175,36 @@
     </style>
 
     <style name="MyAlertDialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="android:background">@color/white</item>
         <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
+        <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/MaterialAlertDialogTitleTextStyle</item>
+        <item name="materialAlertDialogBodyTextStyle">@style/MaterialAlertDialogBodyTextStyle</item>
     </style>
+
     <style name="NegativeButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
-        <item name="android:textColor">@color/alert_dialog_negative_button</item>
+        <item name="android:textColor">@color/alert_dialog_button</item>
+        <item name="android:paddingTop">46dp</item>
+    </style>
+
+    <style name="PositiveButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/alert_dialog_button</item>
+    </style>
+
+    <style name="MaterialAlertDialogTitleTextStyle" parent="@style/MaterialAlertDialog.MaterialComponents.Title.Text">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="MaterialAlertDialogBodyTextStyle" parent="@style/MaterialAlertDialog.Material3.Body.Text">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:layout_marginTop">4dp</item>
+    </style>
+
+    <style name="PlaylistSubstringStyle">
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/black</item>
     </style>
 </resources>

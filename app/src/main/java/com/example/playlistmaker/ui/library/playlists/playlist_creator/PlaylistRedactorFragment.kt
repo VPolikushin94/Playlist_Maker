@@ -25,6 +25,11 @@ class PlaylistRedactorFragment : PlaylistCreatorFragment() {
 
         setContent(playlist)
         setClickListeners(playlist)
+
+//        viewModel.playlistCreatingState.removeObservers(viewLifecycleOwner)
+        viewModel.isExit.observe(viewLifecycleOwner){
+            findNavController().navigateUp()
+        }
     }
 
     private fun setClickListeners(playlist: Playlist) {
@@ -38,7 +43,7 @@ class PlaylistRedactorFragment : PlaylistCreatorFragment() {
                 } else {
                     playlist.imgName
                 }
-                viewModel.addPlaylist(
+                viewModel.updatePlaylist(
                     playlist.playlistId,
                     binding.etName.text.toString(),
                     image ?: "",

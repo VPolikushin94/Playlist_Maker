@@ -75,7 +75,7 @@ class FavoritesFragment : Fragment() {
     }
 
     private fun setRecyclerViewAdapters() {
-        trackListAdapter = TrackListAdapter()
+        trackListAdapter = TrackListAdapter(false)
         binding.rvFavoritesList.itemAnimator = null
         binding.rvFavoritesList.adapter = trackListAdapter
     }

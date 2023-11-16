@@ -8,7 +8,9 @@ import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.ui.search.diff_util.TrackDiffUtilCallback
 import com.example.playlistmaker.ui.search.view_holder.TrackListViewHolder
 
-class TrackListAdapter : ListAdapter<Track, TrackListViewHolder>(TrackDiffUtilCallback())  {
+class TrackListAdapter(
+    private val isPlaylistWatcherTracks: Boolean
+) : ListAdapter<Track, TrackListViewHolder>(TrackDiffUtilCallback())  {
 
     var onTrackClickListener: ((Track) -> Unit)? = null
     var onTrackLongClickListener: ((Track) -> Unit)? = null
@@ -20,12 +22,12 @@ class TrackListAdapter : ListAdapter<Track, TrackListViewHolder>(TrackDiffUtilCa
     }
 
     override fun onBindViewHolder(holder: TrackListViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        holder.bind(getItem(holder.adapterPosition), isPlaylistWatcherTracks)
         holder.itemView.setOnClickListener{
-            onTrackClickListener?.invoke(getItem(position))
+            onTrackClickListener?.invoke(getItem(holder.adapterPosition))
         }
         holder.itemView.setOnLongClickListener {
-            onTrackLongClickListener?.invoke(getItem(position))
+            onTrackLongClickListener?.invoke(getItem(holder.adapterPosition))
             true
         }
     }

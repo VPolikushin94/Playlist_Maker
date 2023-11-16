@@ -19,7 +19,7 @@ class HistoryTrackListAdapter : ListAdapter<Track, TrackListViewHolder>(TrackDif
     }
 
     override fun onBindViewHolder(holder: TrackListViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        holder.bind(getItem(position), false)
         holder.itemView.setOnClickListener {
             onTrackClickListener?.invoke(getItem(position))
         }

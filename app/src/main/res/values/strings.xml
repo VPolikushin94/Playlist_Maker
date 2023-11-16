@@ -82,4 +82,5 @@
     <string name="delete_playlist_dialog_title">Хотите удалить плейлист «%s»?</string>
     <string name="redact">Редактировать</string>
     <string name="save">Сохранить</string>
+    <string name="empty_track_list">В данном плейлисте нет треков,\nкоторыми можно поделиться</string>
 </resources>

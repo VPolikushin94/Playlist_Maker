@@ -10,6 +10,7 @@ data class FavoriteTracksEntity(
     val trackName: String,
     val artistName: String,
     val trackTimeMillis: String,
+    val artworkUrl60: String,
     val artworkUrl100: String,
     val artworkUrl512: String,
     val collectionName: String,

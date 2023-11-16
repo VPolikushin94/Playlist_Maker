@@ -199,7 +199,7 @@ class SearchFragment : Fragment() {
     }
 
     private fun setRecyclerViewAdapters() {
-        trackListAdapter = TrackListAdapter()
+        trackListAdapter = TrackListAdapter(false)
         binding.rvTrackList.itemAnimator = null
         binding.rvTrackList.adapter = trackListAdapter
 

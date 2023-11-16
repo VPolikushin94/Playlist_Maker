@@ -20,9 +20,9 @@ import com.example.playlistmaker.domain.library.playlists.models.Playlist
 import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.ui.library.playlists.playlist_creator.PlaylistCreatorFragment
 import com.example.playlistmaker.ui.library.playlists.playlist_creator.PlaylistRedactorFragment
-import com.example.playlistmaker.ui.player.AudioPlayerFragment
 import com.example.playlistmaker.ui.library.playlists.playlist_watcher.models.PlaylistWatcherScreenState
 import com.example.playlistmaker.ui.library.playlists.playlist_watcher.view_model.PlaylistWatcherViewModel
+import com.example.playlistmaker.ui.player.AudioPlayerFragment
 import com.example.playlistmaker.ui.search.adapter.TrackListAdapter
 import com.example.playlistmaker.ui.settings.models.ShareState
 import com.example.playlistmaker.ui.settings.models.ShareType
@@ -46,6 +46,7 @@ class PlaylistWatcherFragment : Fragment() {
     private lateinit var trackToDelete: Track
 
     private lateinit var playlistInfoBottomSheetBehavior: BottomSheetBehavior<LinearLayout>
+    private lateinit var trackListBottomSheetBehavior: BottomSheetBehavior<LinearLayout>
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
@@ -69,14 +70,14 @@ class PlaylistWatcherFragment : Fragment() {
         val playlist: Playlist = arguments?.getParcelable(PLAYLIST_INFO)
             ?: throw RuntimeException("Empty PLAYLIST_INFO argument")
 
+
         setDeleteTrackConfirmDialog()
         setDeletePlaylistConfirmDialog()
-        setContent(playlist)
         setRecyclerViewAdapter()
         setClickListeners()
-        setBottomSheet()
+        setPlaylistBottomSheet()
+        setTracksBottomSheet()
         setTouchListeners()
-
 
         playlistWatcherViewModel.updatePlayListAndTracks(
             playlist.playlistId ?: throw RuntimeException("Empty playlistId")
@@ -98,7 +99,13 @@ class PlaylistWatcherFragment : Fragment() {
         }
     }
 
-    private fun setBottomSheet() {
+    private fun setTracksBottomSheet() {
+        trackListBottomSheetBehavior = BottomSheetBehavior.from(binding.tracksBottomSheet).apply {
+            state = BottomSheetBehavior.STATE_HIDDEN
+        }
+    }
+
+    private fun setPlaylistBottomSheet() {
         playlistInfoBottomSheetBehavior = BottomSheetBehavior.from(binding.playlistBottomSheet).apply {
             state = BottomSheetBehavior.STATE_HIDDEN
         }
@@ -176,17 +183,14 @@ class PlaylistWatcherFragment : Fragment() {
     }
 
     private fun calculatePeekHeight() {
-        val bottomSheetBehavior = BottomSheetBehavior.from(binding.tracksBottomSheet)
         val screenHeight = binding.root.height
 
         val peekHeight = screenHeight - (binding.buttonPlaylistShare.bottom + resources.getDimensionPixelSize(R.dimen.bottom_sheet_padding_top))
-        bottomSheetBehavior.peekHeight = if (peekHeight < MIN_PEEK_HEIGHT) {
+        trackListBottomSheetBehavior.peekHeight = if (peekHeight < MIN_PEEK_HEIGHT) {
             MIN_PEEK_HEIGHT
         } else {
             peekHeight
         }
-
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
     }
 
     private fun setClickListeners() {
@@ -226,7 +230,7 @@ class PlaylistWatcherFragment : Fragment() {
     }
 
     private fun setRecyclerViewAdapter() {
-        trackAdapter = TrackListAdapter()
+        trackAdapter = TrackListAdapter(true)
         binding.rvTracks.adapter = trackAdapter
     }
 
@@ -288,7 +292,9 @@ class PlaylistWatcherFragment : Fragment() {
                 showProgressBar(false)
                 val trackList = state.playlistAndTracks.tracks
 
-                updateBottomSheetContent(trackList)
+                updateTracksBottomSheetState(trackList)
+
+                updateTracksBottomSheetContent(trackList)
 
                 setContent(state.playlistAndTracks.playlist)
             }
@@ -296,10 +302,20 @@ class PlaylistWatcherFragment : Fragment() {
         }
     }
 
-    private fun updateBottomSheetContent(trackList: List<Track>) {
+    private fun updateTracksBottomSheetState(trackList: List<Track>) {
+        if (trackList.isEmpty()) {
+            trackListBottomSheetBehavior.isHideable = true
+            trackListBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+            showSnackBar(getString(R.string.empty_track_list))
+        } else if(trackListBottomSheetBehavior.state != BottomSheetBehavior.STATE_EXPANDED){
+            trackListBottomSheetBehavior.isHideable = false
+            trackListBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        }
+    }
+
+    private fun updateTracksBottomSheetContent(trackList: List<Track>) {
         binding.llTracksPlaceholder.isVisible = trackList.isEmpty()
         binding.rvTracks.isVisible = trackList.isNotEmpty()
-
         trackAdapter.submitList(trackList)
     }
 

@@ -9,9 +9,15 @@ import com.example.playlistmaker.domain.search.models.Track
 
 class TrackListViewHolder(private val binding: TrackItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(model: Track) {
+    fun bind(model: Track, isPlaylistWatcherTracks: Boolean) {
         Glide.with(itemView)
-            .load(model.artworkUrl100)
+            .load(
+                if(isPlaylistWatcherTracks) {
+                    model.artworkUrl100
+                } else {
+                    model.artworkUrl60
+                }
+            )
             .placeholder(R.drawable.ic_song_placeholder)
             .centerCrop()
             .transform(

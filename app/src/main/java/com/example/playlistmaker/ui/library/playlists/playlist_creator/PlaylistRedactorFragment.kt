@@ -26,7 +26,6 @@ class PlaylistRedactorFragment : PlaylistCreatorFragment() {
         setContent(playlist)
         setClickListeners(playlist)
 
-//        viewModel.playlistCreatingState.removeObservers(viewLifecycleOwner)
         viewModel.isExit.observe(viewLifecycleOwner){
             findNavController().navigateUp()
         }

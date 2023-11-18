@@ -17,6 +17,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistWatcherBinding
 import com.example.playlistmaker.domain.library.playlists.models.Playlist
+import com.example.playlistmaker.domain.library.playlists.models.PlaylistAndTracks
 import com.example.playlistmaker.domain.search.models.Track
 import com.example.playlistmaker.ui.library.playlists.playlist_creator.PlaylistCreatorFragment
 import com.example.playlistmaker.ui.library.playlists.playlist_creator.PlaylistRedactorFragment
@@ -201,11 +202,11 @@ class PlaylistWatcherFragment : Fragment() {
             playlistInfoBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
         }
         binding.buttonPlaylistShare.setOnClickListener {
-            playlistWatcherViewModel.sharePlaylist(playlistWatcherViewModel.currentPlaylist)
+            sharePlaylist(playlistWatcherViewModel.currentPlaylist)
         }
 
         binding.buttonBsShare.setOnClickListener {
-            playlistWatcherViewModel.sharePlaylist(playlistWatcherViewModel.currentPlaylist)
+            sharePlaylist(playlistWatcherViewModel.currentPlaylist)
         }
         binding.buttonBsRedactInfo.setOnClickListener {
             findNavController().navigate(
@@ -226,6 +227,14 @@ class PlaylistWatcherFragment : Fragment() {
         trackAdapter.onTrackLongClickListener = {
             trackToDelete = it
             deleteTrackConfirmDialog.show()
+        }
+    }
+
+    private fun sharePlaylist(playlistAndTracks: PlaylistAndTracks) {
+        if (playlistAndTracks.tracks.isEmpty()) {
+            showSnackBar(getString(R.string.empty_track_list))
+        } else {
+            playlistWatcherViewModel.sharePlaylist(playlistAndTracks)
         }
     }
 

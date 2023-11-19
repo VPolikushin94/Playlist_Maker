@@ -232,6 +232,7 @@ class PlaylistWatcherFragment : Fragment() {
 
     private fun sharePlaylist(playlistAndTracks: PlaylistAndTracks) {
         if (playlistAndTracks.tracks.isEmpty()) {
+            playlistInfoBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
             showSnackBar(getString(R.string.empty_track_list))
         } else {
             playlistWatcherViewModel.sharePlaylist(playlistAndTracks)

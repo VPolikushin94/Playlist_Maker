@@ -61,5 +61,26 @@
         <item quantity="many">%d треков</item>
         <item quantity="other">%d треков</item>
     </plurals>
+    <plurals name="playlist_time">
+        <item quantity="zero">%d минут</item>
+        <item quantity="one">%d минута</item>
+        <item quantity="two">%d минуты</item>
+        <item quantity="few">%d минуты</item>
+        <item quantity="many">%d минут</item>
+        <item quantity="other">%d минут</item>
+    </plurals>
     <string name="playlist_image_desc">playlist image</string>
+    <string name="playlist_share">playlist share</string>
+    <string name="empty_playlist">Ваш плейлист пуст</string>
+    <string name="delete_track">Хотите удалить трек?</string>
+    <string name="not">Нет</string>
+    <string name="yes">Да</string>
+    <string name="share_playlist_error">Не удалось поделиться плейлистом</string>
+    <string name="playlist_bottom_sheet_share">Поделиться</string>
+    <string name="redact_info">Редактировать информацию</string>
+    <string name="delete_playlist">Удалить плейлист</string>
+    <string name="delete_playlist_dialog_title">Хотите удалить плейлист «%s»?</string>
+    <string name="redact">Редактировать</string>
+    <string name="save">Сохранить</string>
+    <string name="empty_track_list">В данном плейлисте нет треков,\nкоторыми можно поделиться</string>
 </resources>

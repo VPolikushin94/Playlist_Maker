@@ -27,14 +27,15 @@ import com.example.playlistmaker.util.ImageSaver
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.util.Calendar
 
 
-class PlaylistCreatorFragment : Fragment() {
+open class PlaylistCreatorFragment : Fragment() {
 
     private var _binding: FragmentPlaylistCreatorBinding? = null
-    private val binding get() = _binding!!
+    protected val binding get() = _binding!!
 
-    private val playlistCreatorViewModel: PlaylistCreatorViewModel by viewModel()
+    open val viewModel: PlaylistCreatorViewModel by viewModel()
 
     private lateinit var photoPicker: ActivityResultLauncher<PickVisualMediaRequest>
 
@@ -48,7 +49,7 @@ class PlaylistCreatorFragment : Fragment() {
 
     private var playlistName: String = ""
     private var playlistDescription: String = ""
-    private var playlistImageUri: Uri? = Uri.EMPTY
+    protected var playlistImageUri: Uri? = Uri.EMPTY
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -72,14 +73,18 @@ class PlaylistCreatorFragment : Fragment() {
             restoreInstanceState(savedInstanceState)
         }
 
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, onBackPressedCallback)
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            onBackPressedCallback
+        )
 
-        playlistCreatorViewModel.playlistCreatingState.observe(viewLifecycleOwner) {
-            when(it) {
+        viewModel.playlistCreatingState.observe(viewLifecycleOwner) {
+            when (it) {
                 is PlaylistCreatingState.Created -> {
                     showSnackBar()
                     findNavController().navigateUp()
                 }
+
                 else -> {}
             }
         }
@@ -175,7 +180,7 @@ class PlaylistCreatorFragment : Fragment() {
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private fun setListTouchListeners() {
+    fun setListTouchListeners() {
         binding.root.setOnTouchListener { _, _ ->
             hideKeyboard()
             binding.etName.clearFocus()
@@ -192,22 +197,30 @@ class PlaylistCreatorFragment : Fragment() {
             photoPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
         binding.buttonCreate.setOnClickListener {
-            if(playlistCreatorViewModel.clickDebounce()) {
-                var savedImgName = ""
-                if (playlistImageUri != Uri.EMPTY) {
-                    playlistImageUri?.let {
-                        savedImgName = ImageSaver.saveImage(
-                            requireActivity(),
-                            it,
-                            playlistName + IMAGE_FORMAT)
-                    }
-                }
-                playlistCreatorViewModel.addPlaylist(
+            if (viewModel.clickDebounce()) {
+                viewModel.addPlaylist(
+                    null,
                     playlistName,
-                    savedImgName,
+                    getSavedImageName(),
                     playlistDescription
                 )
             }
+        }
+    }
+
+    protected fun getSavedImageName(): String {
+        if (playlistImageUri != Uri.EMPTY) {
+            playlistImageUri?.let {
+                val currentTime = Calendar.getInstance().time.toString()
+                return ImageSaver.saveImage(
+                    requireActivity(),
+                    it,
+                    playlistName + currentTime + IMAGE_FORMAT
+                )
+            }
+            return ""
+        } else {
+            return ""
         }
     }
 
@@ -251,7 +264,7 @@ class PlaylistCreatorFragment : Fragment() {
 
     private fun restoreInstanceState(savedInstanceState: Bundle) {
         playlistImageUri = savedInstanceState.getParcelable(IMAGE_URI)
-        if(playlistImageUri != Uri.EMPTY) {
+        if (playlistImageUri != Uri.EMPTY) {
             playlistImageUri?.let { setImage(it) }
         }
 

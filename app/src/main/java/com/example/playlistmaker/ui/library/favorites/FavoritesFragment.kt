@@ -58,7 +58,7 @@ class FavoritesFragment : Fragment() {
 
                 binding.llFavoritesPlaceholder.isVisible = state.isEmpty
                 binding.rvFavoritesList.isVisible = !state.isEmpty
-                trackListAdapter?.notifyDataSetChanged()
+                trackListAdapter?.submitList(state.trackList)
             }
         }
 
@@ -75,8 +75,8 @@ class FavoritesFragment : Fragment() {
     }
 
     private fun setRecyclerViewAdapters() {
-        trackListAdapter = TrackListAdapter()
-        trackListAdapter?.trackList = favoritesViewModel.favoritesList
+        trackListAdapter = TrackListAdapter(false)
+        binding.rvFavoritesList.itemAnimator = null
         binding.rvFavoritesList.adapter = trackListAdapter
     }
 

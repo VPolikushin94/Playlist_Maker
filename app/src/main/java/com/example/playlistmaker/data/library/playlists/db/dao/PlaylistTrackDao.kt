@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
+import androidx.room.Query
 import androidx.room.Transaction
 import com.example.playlistmaker.data.library.playlists.db.entity.PlaylistEntity
 import com.example.playlistmaker.data.library.playlists.db.entity.PlaylistTrackCrossRef
@@ -17,6 +18,11 @@ interface PlaylistTrackDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertPlaylistTrackCrossRef(playlistTrackCrossRef: PlaylistTrackCrossRef): Long
+
+    @Query("SELECT COUNT(trackForeignId) FROM playlist_track_cross_ref WHERE trackForeignId=:trackId")
+    suspend fun getTrackCount(trackId: Int): Int
+    @Query("DELETE FROM playlist_track_cross_ref WHERE playlistForeignId=:playlistId AND trackForeignId=:trackId")
+    suspend fun deleteTrackCrossRef(playlistId: Int, trackId: Int)
 
     @Transaction
     suspend fun insertTrackToPlaylist(

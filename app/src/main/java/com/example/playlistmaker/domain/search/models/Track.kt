@@ -9,6 +9,7 @@ data class Track(
     val trackName: String,
     val artistName: String,
     val trackTimeMillis: String,
+    val artworkUrl60: String,
     val artworkUrl100: String,
     val artworkUrl512: String,
     val collectionName: String,
@@ -16,5 +17,5 @@ data class Track(
     val primaryGenreName: String,
     val country: String,
     val previewUrl: String,
-    var isFavorite: Boolean = false
+    var isFavorite: Boolean = false,
 ) : Parcelable

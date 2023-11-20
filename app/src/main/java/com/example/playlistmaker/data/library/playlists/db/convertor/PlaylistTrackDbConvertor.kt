@@ -2,6 +2,7 @@ package com.example.playlistmaker.data.library.playlists.db.convertor
 
 import com.example.playlistmaker.data.library.playlists.db.entity.TrackEntity
 import com.example.playlistmaker.domain.search.models.Track
+import com.example.playlistmaker.util.DateTimeUtil
 import java.util.Calendar
 
 class PlaylistTrackDbConvertor {
@@ -10,7 +11,8 @@ class PlaylistTrackDbConvertor {
             track.trackId,
             track.trackName,
             track.artistName,
-            track.trackTimeMillis,
+            DateTimeUtil.getTimeInMilliseconds(track.trackTimeMillis),
+            track.artworkUrl60,
             track.artworkUrl100,
             track.artworkUrl512,
             track.collectionName,
@@ -28,7 +30,8 @@ class PlaylistTrackDbConvertor {
             trackEntity.trackId,
             trackEntity.trackName,
             trackEntity.artistName,
-            trackEntity.trackTimeMillis,
+            DateTimeUtil.getFormatTime(trackEntity.trackTimeMillis.toInt()),
+            trackEntity.artworkUrl60,
             trackEntity.artworkUrl100,
             trackEntity.artworkUrl512,
             trackEntity.collectionName,

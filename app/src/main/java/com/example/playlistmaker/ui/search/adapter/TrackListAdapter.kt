@@ -2,16 +2,18 @@ package com.example.playlistmaker.ui.search.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.ListAdapter
 import com.example.playlistmaker.databinding.TrackItemBinding
 import com.example.playlistmaker.domain.search.models.Track
-import com.example.playlistmaker.ui.search.TrackListViewHolder
+import com.example.playlistmaker.ui.search.diff_util.TrackDiffUtilCallback
+import com.example.playlistmaker.ui.search.view_holder.TrackListViewHolder
 
-class TrackListAdapter: RecyclerView.Adapter<TrackListViewHolder>() {
-
-    var trackList = ArrayList<Track>()
+class TrackListAdapter(
+    private val isPlaylistWatcherTracks: Boolean
+) : ListAdapter<Track, TrackListViewHolder>(TrackDiffUtilCallback())  {
 
     var onTrackClickListener: ((Track) -> Unit)? = null
+    var onTrackLongClickListener: ((Track) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackListViewHolder {
         val layoutInspector = LayoutInflater.from(parent.context)
@@ -20,14 +22,13 @@ class TrackListAdapter: RecyclerView.Adapter<TrackListViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: TrackListViewHolder, position: Int) {
-        holder.bind(trackList[position])
+        holder.bind(getItem(holder.adapterPosition), isPlaylistWatcherTracks)
         holder.itemView.setOnClickListener{
-            onTrackClickListener?.invoke(trackList[position])
+            onTrackClickListener?.invoke(getItem(holder.adapterPosition))
+        }
+        holder.itemView.setOnLongClickListener {
+            onTrackLongClickListener?.invoke(getItem(holder.adapterPosition))
+            true
         }
     }
-
-    override fun getItemCount(): Int {
-        return trackList.size
-    }
-
 }

@@ -20,6 +20,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
+            android:id="@+id/tv_screen_name"
             style="@style/TextHeaderStyle"
             android:paddingStart="12dp"
             android:paddingEnd="0dp"

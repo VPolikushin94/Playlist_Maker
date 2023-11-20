@@ -22,12 +22,13 @@ fun TrackDto.toTrack(): Track {
         this.trackName ?: "",
         this.artistName ?: "",
         if(this.trackTimeMillis == null) "" else DateTimeUtil.getFormatTime(this.trackTimeMillis),
+        this.artworkUrl100?.replaceAfterLast('/', "60x60bb.jpg") ?: "",
         this.artworkUrl100 ?: "",
         this.artworkUrl100?.replaceAfterLast('/', "512x512bb.jpg") ?: "",
         this.collectionName ?: "",
         this.releaseDate ?: "",
         this.primaryGenreName ?: "",
         this.country ?: "",
-        this.previewUrl ?: ""
+        this.previewUrl ?: "",
     )
 }

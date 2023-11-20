@@ -1,5 +1,6 @@
 package com.example.playlistmaker.domain.sharing.impl
 
+import com.example.playlistmaker.domain.library.playlists.models.PlaylistAndTracks
 import com.example.playlistmaker.domain.sharing.api.SharingInteractor
 import com.example.playlistmaker.domain.sharing.api.SharingRepository
 
@@ -15,5 +16,9 @@ class SharingInteractorImpl(private val sharingRepository: SharingRepository) : 
 
     override fun openSupport(): Boolean {
         return sharingRepository.openSupport()
+    }
+
+    override fun sharePlaylist(playlistAndTracks: PlaylistAndTracks): Boolean {
+        return sharingRepository.sharePlaylist(playlistAndTracks)
     }
 }

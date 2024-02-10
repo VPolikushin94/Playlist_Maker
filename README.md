@@ -24,6 +24,10 @@
   <img src="https://github.com/VPolikushin94/Playlist_Maker/assets/121296133/6466ac86-1c06-40b2-836c-4767795fe862" width="250"/>
   <img src="https://github.com/VPolikushin94/Playlist_Maker/assets/121296133/5515fd36-6364-4083-b7ff-91dc60d44082" width="250"/>
 
+- Просмотр избранного
+
+  <img src="https://github.com/VPolikushin94/Playlist_Maker/assets/121296133/1a435e44-40fc-4c8e-87d3-2dba7fde2576" width="250"/>
+
 - Настройки
 
   <img src="https://github.com/VPolikushin94/Playlist_Maker/assets/121296133/9651979d-c84a-47c0-a725-fa3721a17288" width="250"/>

@@ -34,5 +34,5 @@
 
 ## Стэк
 
-MVVM, Kotlin, Coroutines, Room, Koin, Retrofit, Gson, ListAdapter, DiffUtil, ViewBinding, Navigation Component
+MVVM, Kotlin, Coroutines, Room, Shared Preferences, Koin, Retrofit, Gson, ListAdapter, DiffUtil, ViewBinding, Navigation Component
 

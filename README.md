@@ -32,3 +32,7 @@
 
   <img src="https://github.com/VPolikushin94/Playlist_Maker/assets/121296133/9651979d-c84a-47c0-a725-fa3721a17288" width="250"/>
 
+## Стэк
+
+MVVM, Kotlin, Coroutines, Room, Koin, Retrofit, Gson, ListAdapter, DiffUtil, ViewBinding, Navigation Component
+
